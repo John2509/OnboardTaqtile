@@ -55,12 +55,7 @@ export default class LoginComponent extends Component<Props, { email: string, se
   }
 
   onSubmit(): any{
-    if (this.state.email === null || this.state.email === ''){
-      Alert.alert('Por Favor insira um E-mail')
-    }
-    else {
-      Alert.alert('Fazendo login...');
-    }
+    Alert.alert('Fazendo login...');
   }
 };
 
