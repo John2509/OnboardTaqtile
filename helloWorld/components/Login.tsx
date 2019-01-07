@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
-import { AppRegistry, TextInput, Text, View, StyleSheet, TouchableHighlight, Alert, Dimensions, ActivityIndicator, Modal, FlatList } from 'react-native';
-import { bool } from 'prop-types';
+import { AppRegistry, TextInput, Text, View, StyleSheet, TouchableHighlight, Alert, Dimensions, ActivityIndicator, Modal, Switch } from 'react-native';
 
 interface Props {}
 export default class Login extends Component<Props, { 
   email: string, 
   senha: string, 
   loading: boolean,
-  emailError: string;
-  senhaError: string;
-}> {
+  emailError: string,
+  senhaError: string,
+}> 
+{
   private emailInput: any;
   private senhaInput: any;
   
   constructor(props: Props) {
     super(props);
     this.state = { 
-      email: '', 
-      senha: '' , 
+      email: 'admin@taqtile.com', 
+      senha: '1111' , 
       loading: false,
-      emailError: ' ',
-      senhaError: ' ',
+      emailError: '',
+      senhaError: '',
     };
   }
 
@@ -44,7 +44,7 @@ export default class Login extends Component<Props, {
             onSubmitEditing={() => this.senhaInput.focus()}
             editable={!this.state.loading}
           />
-          <Text style={styles.textError}>{this.state.emailError}</Text>
+          <Text style={styles.textError}> {this.state.emailError}</Text>
         </View>
 
         <View style={styles.inputConteiner}>
@@ -61,7 +61,11 @@ export default class Login extends Component<Props, {
             ref={(input) => { this.senhaInput = input; }}
             editable={!this.state.loading}
           />
-          <Text style={styles.textError}>{this.state.senhaError}</Text>
+          <Text style={styles.textError}> {this.state.senhaError}</Text>
+        </View>
+
+        <View>
+          <Switch></Switch>
         </View>
 
         <View style={styles.buttonConteiner}>
@@ -78,10 +82,11 @@ export default class Login extends Component<Props, {
           animationType='slide'
           transparent={true}
           visible={this.state.loading}
-          onRequestClose={() => {}}>
+          onRequestClose={() => null}>
           <View style={styles.modalBackground}>
             <View style={styles.activityIndicatorWrapper}>
               <ActivityIndicator size='large' color='#803080' animating={this.state.loading}/>
+
             </View>
           </View>
         </Modal>
@@ -90,19 +95,58 @@ export default class Login extends Component<Props, {
     );
   }
 
+  activityIndicatorEnd = (alertMessage: string, alertDetais?: string) => {
+    this.setState({ 
+      loading: false, 
+      email : '', 
+      senha : ''
+    },
+      () => setTimeout( () => {
+        Alert.alert(alertMessage, alertDetais)
+      }, 500)
+    );
+  }
+
   activityIndicatorTimeout = () => {
-    setTimeout(() => {
-      this.setState({ loading: false });
-      this.setState({ email : ''});
-      this.setState({ senha : ''});
-    }, 5000)
+    //setTimeout(this.activityIndicatorEnd, 3000);
+  }
+
+  loginRequest = async () => {
+    try {
+      var response = await fetch('https://tq-template-server-sample.herokuapp.com/authenticate/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: this.state.senha,
+          email: this.state.email,
+          rememberMe: false,
+        }),
+      });
+      var responseJson = await response.json();
+      if (responseJson.data) {
+        this.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + responseJson.data.user.name);
+        console.log(responseJson.data);
+      }
+      else if (responseJson.errors) {
+        var totalError = '';
+        responseJson.errors.forEach(function (error: any) {
+          totalError += error.message + '\n';
+        });
+        this.activityIndicatorEnd("Falha no login.", totalError);
+      }
+    } catch (error) {
+      this.activityIndicatorEnd("Erro no login.", error);
+    }
   }
 
   onSubmit = () => {
     var emailRegex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-    var senhaRegex1 = new RegExp(/.{7,}/);
+    var senhaRegex1 = new RegExp(/.{4,}/);
     var senhaRegex2 = new RegExp(/\d/);
-    var senhaRegex3 = new RegExp(/[a-zA-Z]/);
+    var senhaRegex3 = new RegExp(/\w/);
     var error = false;
     var isFocus = false; 
 
@@ -117,7 +161,7 @@ export default class Login extends Component<Props, {
       error = true;
     }
     else {
-      this.setState({emailError: ' '});
+      this.setState({emailError: ''});
     }
 
     if (this.state.senha == ''){
@@ -126,7 +170,7 @@ export default class Login extends Component<Props, {
       error = true;
     }
     else if (!senhaRegex1.test(this.state.senha)){
-      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 7 caracteres.'});
+      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 4 caracteres.'});
       if (!isFocus) {this.senhaInput.focus(); isFocus = true};
       error = true;
     }
@@ -141,13 +185,13 @@ export default class Login extends Component<Props, {
       error = true;
     }
     else {
-      this.setState({senhaError: ' '});
+      this.setState({senhaError: ''});
     }
 
     if (!error){
       //console.log('Fazendo Login...', 'E-mail: ' + this.state.email + '.\nSenha: ' + this.state.senha + '.');
       this.setState({loading: true});
-      this.activityIndicatorTimeout();
+      this.loginRequest();
     }
   }
 };
