@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { AppRegistry, TextInput, Text, View, StyleSheet, TouchableHighlight, Alert, Dimensions } from 'react-native';
+import { AppRegistry, TextInput, Text, View, StyleSheet, TouchableHighlight, Alert, Dimensions, ActivityIndicator, Modal, FlatList } from 'react-native';
 
 interface Props {}
-export default class Login extends Component<Props, { email: string, senha: string }> {
+export default class Login extends Component<Props, { email: string, senha: string, loading: boolean }> {
   private senhaInput: any;
   
   constructor(props: Props) {
     super(props);
-    this.state = { email: '', senha: '' };
+    this.state = { email: '', senha: '' , loading: false};
   }
 
   render() {
@@ -24,9 +24,10 @@ export default class Login extends Component<Props, { email: string, senha: stri
               this.setState({ email: email })}
             } 
             value={this.state.email}
-            keyboardType="email-address"
+            keyboardType='email-address'
             blurOnSubmit={false}
             onSubmitEditing={() => this.senhaInput.focus()}
+            editable={!this.state.loading}
           />
         </View>
 
@@ -42,7 +43,7 @@ export default class Login extends Component<Props, { email: string, senha: stri
             }}
             value={this.state.senha}
             ref={(input) => { this.senhaInput = input; }}
-            onSubmitEditing={() => this.onSubmit}
+            editable={!this.state.loading}
           />
         </View>
 
@@ -50,13 +51,33 @@ export default class Login extends Component<Props, { email: string, senha: stri
           <TouchableHighlight
             style={styles.button}
             onPress={this.onSubmit}
+            disabled={this.state.loading}
           >
-            <Text style={[styles.text, {color: '#FFFFFF', textAlign: "center"}]}>LOGIN</Text>
+            <Text style={[styles.text, {color: '#FFFFFF', textAlign: 'center'}]}>LOGIN</Text>
           </TouchableHighlight>
         </View>
+        
+        <Modal
+          animationType='slide'
+          transparent={true}
+          visible={this.state.loading}>
+          <View style={styles.modalBackground}>
+            <View style={styles.activityIndicatorWrapper}>
+              <ActivityIndicator size='large' color='#803080' animating={this.state.loading}/>
+            </View>
+          </View>
+        </Modal>
 
       </View>
     );
+  }
+
+  activityIndicatorTimeout = () => {
+    setTimeout(() => {
+      this.setState({ loading: false });
+      this.setState({ email : ''});
+      this.setState({ senha : ''});
+    }, 5000)
   }
 
   onSubmit = () => {
@@ -65,22 +86,24 @@ export default class Login extends Component<Props, { email: string, senha: stri
     var senhaRegex2 = new RegExp(/\d/);
     var senhaRegex3 = new RegExp(/[a-zA-Z]/);
     if (this.state.email == '' || this.state.senha == ''){
-      Alert.alert("Erro no Login.", "Por favor insira E-mail e Senha.");
+      Alert.alert('Erro no Login.', 'Por favor insira E-mail e Senha.');
     }
     else if (!emailRegex.test(this.state.email)){
-      Alert.alert("Erro no Login.", "Por favor insira um E-mail válido.");
+      Alert.alert('Erro no Login.', 'Por favor insira um E-mail válido.');
     }
     else if (!senhaRegex1.test(this.state.senha)){
-      Alert.alert("Erro no Login.", "Por favor insira uma Senha com pelo menos 7 caracteres.");
+      Alert.alert('Erro no Login.', 'Por favor insira uma Senha com pelo menos 7 caracteres.');
     }
     else if (!senhaRegex2.test(this.state.senha)){
-      Alert.alert("Erro no Login.", "Por favor insira uma Senha com pelo menos 1 digito.");
+      Alert.alert('Erro no Login.', 'Por favor insira uma Senha com pelo menos 1 digito.');
     }
     else if (!senhaRegex3.test(this.state.senha)){
-      Alert.alert("Erro no Login.", "Por favor insira uma Senha com pelo menos 1 caractere alfanumérico.");
+      Alert.alert('Erro no Login.', 'Por favor insira uma Senha com pelo menos 1 caractere alfanumérico.');
     }
     else {
-      Alert.alert("Fazendo Login...", "E-mail: " + this.state.email + ".\nSenha: " + this.state.senha + ".");
+      //console.log('Fazendo Login...', 'E-mail: ' + this.state.email + '.\nSenha: ' + this.state.senha + '.');
+      this.setState({loading: true});
+      this.activityIndicatorTimeout();
     }
   }
 };
@@ -116,7 +139,23 @@ const styles = StyleSheet.create({
   buttonConteiner: {
     paddingTop: 10, 
     paddingRight: 20, 
-    alignSelf: "flex-end"
+    alignSelf: 'flex-end'
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#2F001F40'
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: '#FFFFFF',
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around'
   }
 });
 
