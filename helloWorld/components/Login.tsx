@@ -60,7 +60,8 @@ export default class Login extends Component<Props, { email: string, senha: stri
         <Modal
           animationType='slide'
           transparent={true}
-          visible={this.state.loading}>
+          visible={this.state.loading}
+          onRequestClose={() => {}}>
           <View style={styles.modalBackground}>
             <View style={styles.activityIndicatorWrapper}>
               <ActivityIndicator size='large' color='#803080' animating={this.state.loading}/>
