@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
 import { AppRegistry, TextInput, Text, View, StyleSheet, TouchableHighlight, Alert, Dimensions, ActivityIndicator, Modal, FlatList } from 'react-native';
+import { bool } from 'prop-types';
 
 interface Props {}
-export default class Login extends Component<Props, { email: string, senha: string, loading: boolean }> {
+export default class Login extends Component<Props, { 
+  email: string, 
+  senha: string, 
+  loading: boolean,
+  emailError: string;
+  senhaError: string;
+}> {
+  private emailInput: any;
   private senhaInput: any;
   
   constructor(props: Props) {
     super(props);
-    this.state = { email: '', senha: '' , loading: false};
+    this.state = { 
+      email: '', 
+      senha: '' , 
+      loading: false,
+      emailError: ' ',
+      senhaError: ' ',
+    };
   }
 
   render() {
@@ -26,9 +40,11 @@ export default class Login extends Component<Props, { email: string, senha: stri
             value={this.state.email}
             keyboardType='email-address'
             blurOnSubmit={false}
+            ref={(input) => { this.emailInput = input; }}
             onSubmitEditing={() => this.senhaInput.focus()}
             editable={!this.state.loading}
           />
+          <Text style={styles.textError}>{this.state.emailError}</Text>
         </View>
 
         <View style={styles.inputConteiner}>
@@ -45,6 +61,7 @@ export default class Login extends Component<Props, { email: string, senha: stri
             ref={(input) => { this.senhaInput = input; }}
             editable={!this.state.loading}
           />
+          <Text style={styles.textError}>{this.state.senhaError}</Text>
         </View>
 
         <View style={styles.buttonConteiner}>
@@ -86,22 +103,48 @@ export default class Login extends Component<Props, { email: string, senha: stri
     var senhaRegex1 = new RegExp(/.{7,}/);
     var senhaRegex2 = new RegExp(/\d/);
     var senhaRegex3 = new RegExp(/[a-zA-Z]/);
-    if (this.state.email == '' || this.state.senha == ''){
-      Alert.alert('Erro no Login.', 'Por favor insira E-mail e Senha.');
+    var error = false;
+    var isFocus = false; 
+
+    if (this.state.email == ''){
+      this.setState({emailError: 'Por favor insira um E-mail.'});
+      if (!isFocus) {this.emailInput.focus(); isFocus = true};
+      error = true;
     }
     else if (!emailRegex.test(this.state.email)){
-      Alert.alert('Erro no Login.', 'Por favor insira um E-mail válido.');
-    }
-    else if (!senhaRegex1.test(this.state.senha)){
-      Alert.alert('Erro no Login.', 'Por favor insira uma Senha com pelo menos 7 caracteres.');
-    }
-    else if (!senhaRegex2.test(this.state.senha)){
-      Alert.alert('Erro no Login.', 'Por favor insira uma Senha com pelo menos 1 digito.');
-    }
-    else if (!senhaRegex3.test(this.state.senha)){
-      Alert.alert('Erro no Login.', 'Por favor insira uma Senha com pelo menos 1 caractere alfanumérico.');
+      this.setState({emailError: 'Por favor insira um E-mail válido.'});
+      if (!isFocus) {this.emailInput.focus(); isFocus = true};
+      error = true;
     }
     else {
+      this.setState({emailError: ' '});
+    }
+
+    if (this.state.senha == ''){
+      this.setState({senhaError: 'Por favor insira uma Senha.'});
+      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
+      error = true;
+    }
+    else if (!senhaRegex1.test(this.state.senha)){
+      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 7 caracteres.'});
+      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
+      error = true;
+    }
+    else if (!senhaRegex2.test(this.state.senha)){
+      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 1 digito.'});
+      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
+      error = true;
+    }
+    else if (!senhaRegex3.test(this.state.senha)){
+      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 1 letra.'}); 
+      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
+      error = true;
+    }
+    else {
+      this.setState({senhaError: ' '});
+    }
+
+    if (!error){
       //console.log('Fazendo Login...', 'E-mail: ' + this.state.email + '.\nSenha: ' + this.state.senha + '.');
       this.setState({loading: true});
       this.activityIndicatorTimeout();
@@ -136,6 +179,7 @@ const styles = StyleSheet.create({
   inputConteiner: {
     width: Dimensions.get('window').width, 
     paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   buttonConteiner: {
     paddingTop: 10, 
@@ -157,6 +201,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  textError: {
+    fontSize: 10,
+    margin: 5,
+    textAlign: 'left',
+    color: '#EE0040',
   }
 });
 
