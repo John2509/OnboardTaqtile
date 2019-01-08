@@ -1,5 +1,17 @@
 import React, { Component } from 'react';
-import { AppRegistry, TextInput, Text, View, StyleSheet, TouchableHighlight, Alert, Dimensions, ActivityIndicator, Modal, Switch } from 'react-native';
+import { AppRegistry, 
+  TextInput, 
+  Text, 
+  View, 
+  StyleSheet, 
+  TouchableHighlight, 
+  Alert, 
+  Dimensions, 
+  ActivityIndicator, 
+  Modal, 
+  Switch,
+  AsyncStorage,
+} from 'react-native';
 
 interface Props {}
 export default class Login extends Component<Props, { 
@@ -8,6 +20,7 @@ export default class Login extends Component<Props, {
   loading: boolean,
   emailError: string,
   senhaError: string,
+  rememberMe: boolean,
 }> 
 {
   private emailInput: any;
@@ -16,11 +29,12 @@ export default class Login extends Component<Props, {
   constructor(props: Props) {
     super(props);
     this.state = { 
-      email: 'admin@taqtile.com', 
-      senha: '1111' , 
+      email: '', 
+      senha: '' , 
       loading: false,
       emailError: '',
       senhaError: '',
+      rememberMe: false,
     };
   }
 
@@ -66,7 +80,12 @@ export default class Login extends Component<Props, {
         
         <View style={styles.bottomConteiner}>
           <View style={styles.switchConteiner}>
-            <Switch></Switch>
+            <Switch
+              onValueChange = {(value) => this.setState({rememberMe: value})}
+              value = {this.state.rememberMe}
+              trackColor = {{false: '#F0F0F0', true: '#803080'}}
+              thumbColor = {'#F0F0F0'}>
+            </Switch>
             <Text style={styles.text}>Lembre de mim</Text>
           </View>
 
@@ -110,10 +129,6 @@ export default class Login extends Component<Props, {
     );
   }
 
-  activityIndicatorTimeout = () => {
-    //setTimeout(this.activityIndicatorEnd, 3000);
-  }
-
   loginRequest = async () => {
     try {
       var response = await fetch('https://tq-template-server-sample.herokuapp.com/authenticate/', {
@@ -125,13 +140,13 @@ export default class Login extends Component<Props, {
         body: JSON.stringify({
           password: this.state.senha,
           email: this.state.email,
-          rememberMe: false,
+          rememberMe: this.state.rememberMe
         }),
       });
       var responseJson = await response.json();
       if (responseJson.data) {
+        AsyncStorage.multiSet([['name', responseJson.data.user.name],['token', responseJson.data.token]]);
         this.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + responseJson.data.user.name);
-        console.log(responseJson.data);
       }
       else if (responseJson.errors) {
         var totalError = '';
@@ -192,7 +207,6 @@ export default class Login extends Component<Props, {
     }
 
     if (!error){
-      //console.log('Fazendo Login...', 'E-mail: ' + this.state.email + '.\nSenha: ' + this.state.senha + '.');
       this.setState({loading: true});
       this.loginRequest();
     }
@@ -204,6 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 10,
     textAlign: 'left',
+    color: '#000000'
   },
   textInput: {
     textAlign: 'left', 

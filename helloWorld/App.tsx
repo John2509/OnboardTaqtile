@@ -10,7 +10,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
-import Login from './components/Login';
+import Login from './screens/Login';
 
 interface Props {}
 export default class App extends Component<Props> {
