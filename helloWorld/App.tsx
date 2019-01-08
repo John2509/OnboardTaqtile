@@ -10,17 +10,24 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
-import Login from './screens/Login';
 import { Navigation } from 'react-native-navigation';
+import Login from './screens/Login';
+import { registerScreens } from './screens/index';
 
 interface Props {}
 export default class App extends Component<Props> {
   render() {
-    return (
-      <View style={styles.container}>
-        <Login/>
-      </View>
-    );
+    registerScreens();
+    Navigation.events().registerAppLaunchedListener(() => {
+      Navigation.setRoot({
+        root: {
+          component: {
+            name: 'Login'
+          }
+        }
+      });
+    });
+    return null;
   }
 }
 
