@@ -63,19 +63,22 @@ export default class Login extends Component<Props, {
           />
           <Text style={styles.textError}> {this.state.senhaError}</Text>
         </View>
+        
+        <View style={styles.bottomConteiner}>
+          <View style={styles.switchConteiner}>
+            <Switch></Switch>
+            <Text style={styles.text}>Lembre de mim</Text>
+          </View>
 
-        <View>
-          <Switch></Switch>
-        </View>
-
-        <View style={styles.buttonConteiner}>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={this.onSubmit}
-            disabled={this.state.loading}
-          >
-            <Text style={[styles.text, {color: '#FFFFFF', textAlign: 'center'}]}>LOGIN</Text>
-          </TouchableHighlight>
+          <View style={styles.buttonConteiner}>
+            <TouchableHighlight
+              style={styles.button}
+              onPress={this.onSubmit}
+              disabled={this.state.loading}
+              >
+              <Text style={[styles.text, {color: '#FFFFFF', textAlign: 'center'}]}>LOGIN</Text>
+            </TouchableHighlight>
+          </View>
         </View>
         
         <Modal
@@ -228,7 +231,18 @@ const styles = StyleSheet.create({
   buttonConteiner: {
     paddingTop: 10, 
     paddingRight: 20, 
-    alignSelf: 'flex-end'
+    alignSelf: 'center',
+  },
+  switchConteiner: {
+    paddingTop: 10, 
+    paddingLeft: 20, 
+    alignItems: 'center',
+    flexDirection: 'row', 
+  },
+  bottomConteiner: { 
+    flexDirection: 'row',  
+    width: Dimensions.get('window').width, 
+    justifyContent: 'space-between'
   },
   modalBackground: {
     flex: 1,
