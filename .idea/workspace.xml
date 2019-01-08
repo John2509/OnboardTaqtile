@@ -3,7 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="c49dd367-9afd-43b8-9f4e-51f7b016e2d4" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/helloWorld/components/Login.tsx" afterPath="$PROJECT_DIR$/helloWorld/components/Login.tsx" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/App.tsx" afterPath="$PROJECT_DIR$/helloWorld/App.tsx" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/android/app/build.gradle" afterPath="$PROJECT_DIR$/helloWorld/android/app/build.gradle" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/android/build.gradle" afterPath="$PROJECT_DIR$/helloWorld/android/build.gradle" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/android/settings.gradle" afterPath="$PROJECT_DIR$/helloWorld/android/settings.gradle" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/ios/helloWorld.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/helloWorld/ios/helloWorld.xcodeproj/project.pbxproj" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/ios/helloWorld/AppDelegate.m" afterPath="$PROJECT_DIR$/helloWorld/ios/helloWorld/AppDelegate.m" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/package.json" afterPath="$PROJECT_DIR$/helloWorld/package.json" />
+      <change beforePath="$PROJECT_DIR$/helloWorld/yarn.lock" afterPath="$PROJECT_DIR$/helloWorld/yarn.lock" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -41,7 +48,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -53,9 +59,10 @@
           <select />
         </subPane>
       </pane>
-      <pane id="ProjectPane" />
       <pane id="Scope" />
+      <pane id="ProjectPane" />
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">

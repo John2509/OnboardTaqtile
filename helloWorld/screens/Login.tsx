@@ -12,6 +12,7 @@ import { AppRegistry,
   Switch,
   AsyncStorage,
 } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 
 interface Props {}
 export default class Login extends Component<Props, { 
@@ -283,5 +284,4 @@ const styles = StyleSheet.create({
   }
 });
 
-// skip this line if using Create React Native App
-AppRegistry.registerComponent('Login', () => Login);
+Navigation.registerComponent(`Login`, () => Login);

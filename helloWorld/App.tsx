@@ -11,6 +11,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Login from './screens/Login';
+import { Navigation } from 'react-native-navigation';
 
 interface Props {}
 export default class App extends Component<Props> {
