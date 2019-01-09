@@ -2,14 +2,13 @@ import React from 'react'
 import {
   View,
   Text,
-  Button,
   AsyncStorage,
   Alert,
   TouchableHighlight
 } from 'react-native'
+import { Navigation } from 'react-native-navigation';
 
 import { goToAuth } from '../scr/navigation';
-import { Navigation } from 'react-native-navigation';
 import { styles } from '../scr/styles';
 import { USER_KEY, TOKEN_KEY } from '../scr/config';
 
@@ -21,11 +20,27 @@ export default class HomePage extends React.Component<{
     return (
       <View style={styles.conteiner}>
         <Text style={styles.text}>Bem Vindo</Text>
-        <TouchableHighlight
-          onPress={this.logout}
-          style={styles.button}>
-          <Text style={styles.textButton}>Logout</Text>
-        </TouchableHighlight>
+
+        <View style={styles.buttonConteiner}>
+          <TouchableHighlight
+            onPress={ () => Navigation.push(this.props.componentId, {
+              component: {
+                name: 'UserList',
+              }
+            })}
+            style={styles.button}>
+            <Text style={styles.textButton}>Lista de Usuários</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View style={styles.buttonConteiner}>
+          <TouchableHighlight
+            onPress={ this.logout }
+            style={styles.button}>
+            <Text style={styles.textButton}>Logout</Text>
+          </TouchableHighlight>
+        </View>
+
       </View>
     );
   }

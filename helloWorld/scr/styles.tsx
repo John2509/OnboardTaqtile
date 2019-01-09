@@ -42,8 +42,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   buttonConteiner: {
-    paddingTop: 10, 
-    paddingRight: 20, 
+    paddingVertical: 10, 
+    paddingHorizontal: 20, 
     alignSelf: 'center',
   },
   switchConteiner: {
