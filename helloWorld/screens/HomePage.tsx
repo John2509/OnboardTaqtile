@@ -1,25 +1,52 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import React from 'react'
+import {
+  View,
+  Text,
+  Button,
+  AsyncStorage,
+  Alert,
+  TouchableHighlight
+} from 'react-native'
 
-interface Props {}
-export default class HomePage extends Component<Props> {
+import { goToAuth } from '../scr/navigation';
+import { Navigation } from 'react-native-navigation';
+import { styles } from '../scr/styles';
+import { USER_KEY, TOKEN_KEY } from '../scr/config';
+
+export default class HomePage extends React.Component<{
+  componentId: any,
+}> 
+{
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Bem Vindo</Text>
+      <View style={styles.conteiner}>
+        <Text style={styles.text}>Bem Vindo</Text>
+        <TouchableHighlight
+          onPress={this.logout}
+          style={styles.button}>
+          <Text style={styles.textButton}>Logout</Text>
+        </TouchableHighlight>
       </View>
     );
   }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  static get options() {
+    return {
+      topBar: {
+        title: {
+          text: 'Bem Vindo'
+        },
+      }
+    };
   }
-});
-
-Navigation.registerComponent(`HomePage`, () => HomePage);
+  
+  logout = async () => {
+    try {
+      await AsyncStorage.removeItem(USER_KEY);
+      await AsyncStorage.removeItem(TOKEN_KEY);
+      goToAuth();
+    } catch (err) {
+      Alert.alert('Erro ao logout...: ', err);
+    }
+  }
+}

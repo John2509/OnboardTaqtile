@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { AppRegistry, 
-  TextInput, 
+import {  TextInput, 
   Text, 
   View, 
-  StyleSheet, 
   TouchableHighlight, 
   Alert, 
-  Dimensions, 
   ActivityIndicator, 
   Modal, 
   Switch,
   AsyncStorage,
 } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+
+import { goHome } from '../scr/navigation'
+import { styles } from '../scr/styles'
+import { USER_KEY, TOKEN_KEY } from '../scr/config'
 
 interface Props {}
 export default class Login extends Component<Props, { 
@@ -96,7 +96,7 @@ export default class Login extends Component<Props, {
               onPress={this.onSubmit}
               disabled={this.state.loading}
               >
-              <Text style={[styles.text, {color: '#FFFFFF', textAlign: 'center'}]}>LOGIN</Text>
+              <Text style={styles.textButton}>LOGIN</Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -146,8 +146,9 @@ export default class Login extends Component<Props, {
       });
       var responseJson = await response.json();
       if (responseJson.data) {
-        AsyncStorage.multiSet([['name', responseJson.data.user.name],['token', responseJson.data.token]]);
+        AsyncStorage.multiSet([[USER_KEY, responseJson.data.user.name],[TOKEN_KEY, responseJson.data.token]]);
         this.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + responseJson.data.user.name);
+        goHome();
       }
       else if (responseJson.errors) {
         var totalError = '';
@@ -213,75 +214,3 @@ export default class Login extends Component<Props, {
     }
   }
 };
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    margin: 10,
-    textAlign: 'left',
-    color: '#000000'
-  },
-  textInput: {
-    textAlign: 'left', 
-    borderBottomColor: '#800080',
-    borderBottomWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch'
-  },
-  conteiner: {
-    flex: 1, 
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FEFDFF',
-  },
-  button: {
-    padding: 10,
-    backgroundColor: '#660066',
-    borderRadius:25,
-  },
-  inputConteiner: {
-    width: Dimensions.get('window').width, 
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  buttonConteiner: {
-    paddingTop: 10, 
-    paddingRight: 20, 
-    alignSelf: 'center',
-  },
-  switchConteiner: {
-    paddingTop: 10, 
-    paddingLeft: 20, 
-    alignItems: 'center',
-    flexDirection: 'row', 
-  },
-  bottomConteiner: { 
-    flexDirection: 'row',  
-    width: Dimensions.get('window').width, 
-    justifyContent: 'space-between'
-  },
-  modalBackground: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    backgroundColor: '#2F001F40'
-  },
-  activityIndicatorWrapper: {
-    backgroundColor: '#FFFFFF',
-    height: 100,
-    width: 100,
-    borderRadius: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around'
-  },
-  textError: {
-    fontSize: 10,
-    margin: 5,
-    textAlign: 'left',
-    color: '#EE0040',
-  }
-});
-
-Navigation.registerComponent(`Login`, () => Login);
