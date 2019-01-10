@@ -9,6 +9,7 @@ import {  TextInput,
   Switch,
   AsyncStorage,
 } from 'react-native';
+import axios from 'axios';
 
 import { goHome } from '../scr/navigation'
 import { styles } from '../scr/styles'
@@ -25,7 +26,7 @@ export default class Login extends Component<{}, {
 {
   private emailInput: any;
   private senhaInput: any;
-  
+
   constructor(props: any) {
     super(props);
     this.state = { 
@@ -77,7 +78,7 @@ export default class Login extends Component<{}, {
           />
           <Text style={styles.textError}> {this.state.senhaError}</Text>
         </View>
-        
+
         <View style={styles.bottomConteiner}>
           <View style={styles.switchConteiner}>
             <Switch
@@ -99,7 +100,7 @@ export default class Login extends Component<{}, {
             </TouchableHighlight>
           </View>
         </View>
-        
+
         <Modal
           animationType='slide'
           transparent={true}
@@ -108,7 +109,6 @@ export default class Login extends Component<{}, {
           <View style={styles.modalBackground}>
             <View style={styles.activityIndicatorWrapper}>
               <ActivityIndicator size='large' color='#803080' animating={this.state.loading}/>
-
             </View>
           </View>
         </Modal>
@@ -125,40 +125,34 @@ export default class Login extends Component<{}, {
     },
       () => setTimeout( () => {
         Alert.alert(alertMessage, alertDetais)
-      }, 500)
+      }, 10)
     );
   }
 
   loginRequest = async () => {
-    try {
-      var response = await fetch('https://tq-template-server-sample.herokuapp.com/authenticate/', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          password: this.state.senha,
-          email: this.state.email,
-          rememberMe: this.state.rememberMe
-        }),
-      });
-      var responseJson = await response.json();
-      if (responseJson.data) {
-        AsyncStorage.multiSet([[USER_KEY, responseJson.data.user.name],[TOKEN_KEY, responseJson.data.token]]);
-        this.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + responseJson.data.user.name);
-        goHome();
-      }
-      else if (responseJson.errors) {
+    var self = this;
+    axios.post('https://tq-template-server-sample.herokuapp.com/authenticate/', {
+      password: this.state.senha,
+      email: this.state.email,
+      rememberMe: this.state.rememberMe
+    })
+    .then(function (response: any){
+      AsyncStorage.multiSet([[USER_KEY, response.data.data.user.name],[TOKEN_KEY, response.data.data.token]]);
+      self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + response.data.data.user.name);
+      goHome();
+    })
+    .catch(function (error){
+      if (error.response) {
         var totalError = '';
-        responseJson.errors.forEach(function (error: any) {
+        error.response.data.errors.forEach(function (error: any) {
           totalError += error.message + '\n';
         });
-        this.activityIndicatorEnd("Falha no login.", totalError);
+        self.activityIndicatorEnd("Falha no login.", totalError);
       }
-    } catch (error) {
-      this.activityIndicatorEnd("Erro no login.", error);
-    }
+      else {
+        self.activityIndicatorEnd("Erro no login.");
+      }
+    });
   }
 
   onSubmit = () => {

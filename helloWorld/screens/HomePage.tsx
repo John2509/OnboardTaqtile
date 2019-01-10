@@ -51,6 +51,7 @@ export default class HomePage extends React.Component<{
         title: {
           text: 'Bem Vindo'
         },
+        drawBehind: true,
       }
     };
   }
@@ -62,6 +63,7 @@ export default class HomePage extends React.Component<{
       goToAuth();
     } catch (err) {
       Alert.alert('Erro ao logout...: ', err);
+      goToAuth();
     }
   }
 }

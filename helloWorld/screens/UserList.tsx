@@ -1,13 +1,17 @@
-import React from 'react'
+import React from 'react';
 import {
   View, FlatList, Text, AsyncStorage, Alert
-} from 'react-native'
+} from 'react-native';
+import axios from 'axios';
+import { Navigation } from 'react-native-navigation';
 
 import { styles } from '../scr/styles';
 import UserListItem from '../component/UserListItem';
 import { TOKEN_KEY } from '../scr/config';
 
-export default class HomePage extends React.Component<{},{
+export default class HomePage extends React.Component<{
+  componentId: any
+},{
   listData: {
     key: string,
     username: string,
@@ -35,33 +39,36 @@ export default class HomePage extends React.Component<{},{
   async getData() {
     var res = this.state.listData;
     var page = this.state.page;
+    var self = this;
 
-    try {
-      const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
-      
-      const parameters = {'page': this.state.page,'window': 30}
-      const url = 'https://tq-template-server-sample.herokuapp.com/users?pagination='+JSON.stringify(parameters);
-      var response = await fetch(url,{
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-      });
-      var responseJson = await response.json();
-      responseJson.data.forEach((user: any) => {
+    const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+    
+    axios.get('https://tq-template-server-sample.herokuapp.com/users', {
+      params: {
+        pagination: {
+          page: this.state.page,
+          window: 30
+        }
+      },
+      headers: {
+        Authorization: token,
+      }
+    })
+    .then(function (response: any){
+      response.data.data.forEach((user: any) => {
         res.push({
           key: user.id.toString(),
           username: user.name,
           role: user.role
         });
       });
-      if (responseJson.pagination.totalPages >= this.state.page) page++;
-      this.setState({listData: res, page: page});
-    }catch (error) {
-      Alert.alert('Erro ao buscar a lista de usuário');
-    }
+      self.setState({listData: res, page: page+1});
+    })
+    .catch(function (error){
+      console.log(error);
+      Navigation.pop(self.props.componentId)
+      Alert.alert('Um erro ocorreu ao buscar usuários');
+    });
   }
 
   render() {
