@@ -1,10 +1,11 @@
 import React from 'react'
 import {
-  View, FlatList, Text
+  View, FlatList, Text, AsyncStorage, Alert
 } from 'react-native'
 
 import { styles } from '../scr/styles';
 import UserListItem from '../component/UserListItem';
+import { TOKEN_KEY } from '../scr/config';
 
 export default class HomePage extends React.Component<{},{
   listData: {
@@ -12,14 +13,14 @@ export default class HomePage extends React.Component<{},{
     username: string,
     role: string,
   }[],
-  lastID: number
+  page: number,
 }> {
 
   constructor(props: any) {
     super(props);
     this.state = { 
-      lastID: 0,
       listData: [],
+      page: 0
     };
   }
 
@@ -31,16 +32,36 @@ export default class HomePage extends React.Component<{},{
     return <UserListItem user={user}/>
   };
 
-  getData() {
+  async getData() {
     var res = this.state.listData;
-    for (var i = 0; i < 30; i++){
-      res.push({
-        key: (i+this.state.lastID).toString(),
-        username: 'Teste',
-        role: 'User'
+    var page = this.state.page;
+
+    try {
+      const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+      
+      const parameters = {'page': this.state.page,'window': 30}
+      const url = 'https://tq-template-server-sample.herokuapp.com/users?pagination='+JSON.stringify(parameters);
+      var response = await fetch(url,{
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
       });
+      var responseJson = await response.json();
+      responseJson.data.forEach((user: any) => {
+        res.push({
+          key: user.id.toString(),
+          username: user.name,
+          role: user.role
+        });
+      });
+      if (responseJson.pagination.totalPages >= this.state.page) page++;
+      this.setState({listData: res, page: page});
+    }catch (error) {
+      Alert.alert('Erro ao buscar a lista de usuário');
     }
-    this.setState({lastID: this.state.lastID+30, listData: res});
   }
 
   render() {
