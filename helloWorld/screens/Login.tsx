@@ -14,8 +14,7 @@ import { goHome } from '../scr/navigation'
 import { styles } from '../scr/styles'
 import { USER_KEY, TOKEN_KEY } from '../scr/config'
 
-interface Props {}
-export default class Login extends Component<Props, { 
+export default class Login extends Component<{}, { 
   email: string, 
   senha: string, 
   loading: boolean,
@@ -27,7 +26,7 @@ export default class Login extends Component<Props, {
   private emailInput: any;
   private senhaInput: any;
   
-  constructor(props: Props) {
+  constructor(props: any) {
     super(props);
     this.state = { 
       email: '', 

@@ -6,33 +6,53 @@ import {
 import { styles } from '../scr/styles';
 import UserListItem from '../component/UserListItem';
 
-export default class HomePage extends React.Component<{
-  componentId: any,
+export default class HomePage extends React.Component<{},{
+  listData: {
+    key: string,
+    username: string,
+    role: string,
+  }[],
+  lastID: number
 }> {
+
+  constructor(props: any) {
+    super(props);
+    this.state = { 
+      lastID: 0,
+      listData: [],
+    };
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
 
   renderItem(user: any) {
     return <UserListItem user={user}/>
   };
 
+  getData() {
+    var res = this.state.listData;
+    for (var i = 0; i < 30; i++){
+      res.push({
+        key: (i+this.state.lastID).toString(),
+        username: 'Teste',
+        role: 'User'
+      });
+    }
+    this.setState({lastID: this.state.lastID+30, listData: res});
+  }
+
   render() {
     return (
       <View style={{flex: 1, alignContent: 'center'}}>
         <FlatList
-          data= {[
-            {username: 'Devin', role: 'Admin'},
-            {username: 'Jackson', role: 'Admin'},
-            {username: 'James', role: 'Admin'},
-            {username: 'Joel', role: 'User'},
-            {username: 'John', role: 'User'},
-            {username: 'Jillian', role: 'User'},
-            {username: 'Jimmy', role: 'User'},
-            {username: 'Julie', role: 'User'},
-          ]}
+          data= {this.state.listData}
           renderItem={this.renderItem}
-          keyExtractor={user => user.username}
           ItemSeparatorComponent={this.renderSeparator}
-          ListHeaderComponent={this.headerComponent}
           style={{flex:1}}
+          onEndReached={() => {this.getData()}}
+          onEndReachedThreshold={0.3}
         />
       </View>
     );
@@ -58,21 +78,6 @@ export default class HomePage extends React.Component<{
           marginLeft: "0%"
         }}
       />
-    );
-  };
-
-  headerComponent =() => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          flex: 1,
-          backgroundColor: '#66006620'
-        }}
-      >
-        <Text style={{flex: 1}}>Nome</Text>
-        <Text style={{flex: 1}}>Função</Text>
-      </View>
     );
   };
 }

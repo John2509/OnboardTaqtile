@@ -1,17 +1,16 @@
 import React, { Component, Props } from 'react';
 import { View, Text } from 'react-native';
+import { styles } from '../scr/styles';
 
 class UserListItem extends Component<{user: any}, {}> {
     render() {
-        console.log(this.props.user)
         return (
             <View style={{
-                flexDirection: 'row',
                 flex: 1,
-                justifyContent: 'space-evenly'
+                marginHorizontal: 15
                 }}>
-                <Text style={{flex:1}}>{this.props.user.item.username}</Text>
-                <Text style={{flex:1}}>{this.props.user.item.role}</Text> 
+                <Text style={[styles.text, {fontWeight: 'bold'}]}>{this.props.user.item.username}</Text>
+                <Text style={{fontSize: 16, marginHorizontal: 25, color: '#303030', margin: 5}}>Função: {this.props.user.item.role}</Text>
             </View>
         )
     }
