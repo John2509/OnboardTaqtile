@@ -1,15 +1,14 @@
 import React from 'react';
 import {
-  View, FlatList, AsyncStorage, Alert, Text, TouchableHighlight
+  View, AsyncStorage, Alert, Text, TouchableHighlight
 } from 'react-native';
 import axios from 'axios';
 import { Navigation } from 'react-native-navigation';
 
 import { styles } from '../scr/styles';
-import UserListItem from '../component/UserListItem';
 import { TOKEN_KEY } from '../scr/config';
 
-export default class HomePage extends React.Component<{
+export default class UserDetails extends React.Component<{
   userId: number,
   componentId: any
 },{

@@ -3,13 +3,11 @@ import {
   View, FlatList, AsyncStorage, Alert
 } from 'react-native';
 import axios from 'axios';
-import { Navigation } from 'react-native-navigation';
 
-import { styles } from '../scr/styles';
 import UserListItem from '../component/UserListItem';
 import { TOKEN_KEY } from '../scr/config';
 
-export default class HomePage extends React.Component<{
+export default class UserList extends React.Component<{
   componentId: any
 },{
   listData: {
@@ -84,7 +82,7 @@ export default class HomePage extends React.Component<{
           ItemSeparatorComponent={this.renderSeparator}
           style={{flex:1}}
           onEndReached={() => {this.getData()}}
-          onEndReachedThreshold={0.4}
+          onEndReachedThreshold={0.45}
         />
       </View>
     );

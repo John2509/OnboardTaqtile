@@ -14,6 +14,8 @@ import axios from 'axios';
 import { goHome } from '../scr/navigation'
 import { styles } from '../scr/styles'
 import { USER_KEY, TOKEN_KEY } from '../scr/config'
+import { validateEmail, validatePassword } from '../scr/validator';
+import UserInputText from '../component/UserInputText';
 
 export default class Login extends Component<{}, { 
   email: string, 
@@ -43,41 +45,31 @@ export default class Login extends Component<{}, {
     return (
       <View style={styles.conteiner}>
 
-        <View style={styles.inputConteiner}>
-          <Text style={styles.text}>E-mail:</Text>
-          <TextInput
-            autoCapitalize='none'
-            autoCorrect={false}
-            style={styles.textInput}
-            onChangeText={(email) =>{
-              this.setState({ email: email })}
-            } 
-            value={this.state.email}
-            keyboardType='email-address'
-            blurOnSubmit={false}
-            ref={(input) => { this.emailInput = input; }}
-            onSubmitEditing={() => this.senhaInput.focus()}
-            editable={!this.state.loading}
-          />
-          <Text style={styles.textError}> {this.state.emailError}</Text>
-        </View>
+        <UserInputText 
+          title='E-mail'
+          onChangeText={(email: string) =>{
+            this.setState({ email: email })}
+          } 
+          errorMessage={this.state.emailError}
+          keyboardType='email-address'
+          setRef={(input: any) => { this.emailInput = input; }}
+          onSubmitEditing={() => this.senhaInput.focus()}
+          editable={!this.state.loading}
+          secureTextEntry={false}
+        />
 
-        <View style={styles.inputConteiner}>
-          <Text style={styles.text}>Senha:</Text>
-          <TextInput
-            autoCapitalize='none'
-            autoCorrect={false}
-            secureTextEntry={true}
-            style={styles.textInput}
-            onChangeText={(senha) =>{
-              this.setState({senha: senha})
-            }}
-            value={this.state.senha}
-            ref={(input) => { this.senhaInput = input; }}
-            editable={!this.state.loading}
-          />
-          <Text style={styles.textError}> {this.state.senhaError}</Text>
-        </View>
+        <UserInputText 
+          title='Senha'
+          onChangeText={(senha: string) =>{
+            this.setState({ senha: senha })}
+          } 
+          errorMessage={this.state.senhaError}
+          keyboardType='default'
+          setRef={(input: any) => { this.senhaInput = input; }}
+          onSubmitEditing={() => this.onSubmit()}
+          editable={!this.state.loading}
+          secureTextEntry={true}
+        />
 
         <View style={styles.bottomConteiner}>
           <View style={styles.switchConteiner}>
@@ -156,49 +148,23 @@ export default class Login extends Component<{}, {
   }
 
   onSubmit = () => {
-    var emailRegex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-    var senhaRegex1 = new RegExp(/.{4,}/);
-    var senhaRegex2 = new RegExp(/\d/);
-    var senhaRegex3 = new RegExp(/\w/);
     var error = false;
     var isFocus = false; 
 
-    if (this.state.email == ''){
-      this.setState({emailError: 'Por favor insira um E-mail.'});
+    var emailValidate = validateEmail(this.state.email);
+
+    this.setState({emailError: emailValidate.message});
+    if (emailValidate.error){
       if (!isFocus) {this.emailInput.focus(); isFocus = true};
       error = true;
-    }
-    else if (!emailRegex.test(this.state.email)){
-      this.setState({emailError: 'Por favor insira um E-mail válido.'});
-      if (!isFocus) {this.emailInput.focus(); isFocus = true};
-      error = true;
-    }
-    else {
-      this.setState({emailError: ''});
     }
 
-    if (this.state.senha == ''){
-      this.setState({senhaError: 'Por favor insira uma Senha.'});
+    var passwordValidate = validatePassword(this.state.senha);
+
+    this.setState({senhaError: passwordValidate.message});
+    if (passwordValidate.error){
       if (!isFocus) {this.senhaInput.focus(); isFocus = true};
       error = true;
-    }
-    else if (!senhaRegex1.test(this.state.senha)){
-      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 4 caracteres.'});
-      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
-      error = true;
-    }
-    else if (!senhaRegex2.test(this.state.senha)){
-      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 1 digito.'});
-      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
-      error = true;
-    }
-    else if (!senhaRegex3.test(this.state.senha)){
-      this.setState({senhaError: 'Por favor insira uma Senha com pelo menos 1 letra.'}); 
-      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
-      error = true;
-    }
-    else {
-      this.setState({senhaError: ''});
     }
 
     if (!error){
