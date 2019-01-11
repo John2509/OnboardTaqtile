@@ -14,12 +14,22 @@ import { USER_KEY, TOKEN_KEY } from '../scr/config';
 
 export default class HomePage extends React.Component<{
   componentId: any,
+},{
+  nome: string,
 }> 
 {
+  constructor(props: any){
+    super(props);
+    this.state = {
+      nome: "",
+    }
+    AsyncStorage.getItem(USER_KEY).then((nome) => this.setState({nome : nome || ""}));
+  }
+
   render() {
     return (
       <View style={styles.conteiner}>
-        <Text style={styles.text}>Bem Vindo</Text>
+        <Text style={styles.text}>Bem Vindo {this.state.nome}</Text>
 
         <View style={styles.buttonConteiner}>
           <TouchableHighlight

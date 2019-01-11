@@ -79,7 +79,7 @@ export default class HomePage extends React.Component<{
           ItemSeparatorComponent={this.renderSeparator}
           style={{flex:1}}
           onEndReached={() => {this.getData()}}
-          onEndReachedThreshold={0.3}
+          onEndReachedThreshold={0.4}
         />
       </View>
     );
