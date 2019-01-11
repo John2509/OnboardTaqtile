@@ -66,7 +66,6 @@ export default class HomePage extends React.Component<{
     })
     .catch(function (error){
       console.log(error);
-      Navigation.pop(self.props.componentId)
       Alert.alert('Um erro ocorreu ao buscar usuários');
     });
   }
