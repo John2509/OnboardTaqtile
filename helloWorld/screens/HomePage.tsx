@@ -31,7 +31,7 @@ export default class HomePage extends React.Component<{
       <View style={styles.conteiner}>
         <Text style={styles.text}>Bem Vindo {this.state.nome}</Text>
 
-        <View style={styles.buttonConteiner}>
+        <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight
             onPress={ () => Navigation.push(this.props.componentId, {
               component: {
@@ -43,7 +43,7 @@ export default class HomePage extends React.Component<{
           </TouchableHighlight>
         </View>
 
-        <View style={styles.buttonConteiner}>
+        <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight
             onPress={ this.logout }
             style={styles.button}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, FlatList, Text, AsyncStorage, Alert
+  View, FlatList, AsyncStorage, Alert
 } from 'react-native';
 import axios from 'axios';
 import { Navigation } from 'react-native-navigation';
@@ -16,15 +16,18 @@ export default class HomePage extends React.Component<{
     key: string,
     username: string,
     role: string,
+    id: number
   }[],
   page: number,
+  componentID: string,
 }> {
 
   constructor(props: any) {
     super(props);
     this.state = { 
       listData: [],
-      page: 0
+      page: 0,
+      componentID: this.props.componentId
     };
   }
 
@@ -37,6 +40,7 @@ export default class HomePage extends React.Component<{
   };
 
   async getData() {
+
     var res = this.state.listData;
     var page = this.state.page;
     var self = this;
@@ -59,7 +63,8 @@ export default class HomePage extends React.Component<{
         res.push({
           key: user.id.toString(),
           username: user.name,
-          role: user.role
+          role: user.role,
+          id: user.id
         });
       });
       self.setState({listData: res, page: page+1});
