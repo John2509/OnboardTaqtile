@@ -8,6 +8,7 @@ import { Navigation } from 'react-native-navigation';
 import { styles } from '../scr/styles';
 import { TOKEN_KEY } from '../scr/config';
 import UserInputText from '../component/UserInputText';
+import { validateName, validateEmail } from '../scr/validator';
 
 export default class UserDetails extends React.Component<{
   userId: number,
@@ -16,8 +17,14 @@ export default class UserDetails extends React.Component<{
   email: string,
   name: string,
   role: string,
-  editar: boolean
+  editar: boolean,
+
+  nameError: string
+  emailError: string,
 }> {
+
+  private nameInput: any;
+  private emailInput: any;
 
   constructor(props: any) {
     super(props);
@@ -25,7 +32,10 @@ export default class UserDetails extends React.Component<{
       email: "",
       name: "",
       role: "",
-      editar: false
+      editar: false,
+
+      nameError: '',
+      emailError: '',
     };
   }
 
@@ -65,6 +75,8 @@ export default class UserDetails extends React.Component<{
           value={this.state.name} 
           editable={this.state.editar}
           onChangeText={(name: string) => this.setState({name: name})}
+          setRef={(input:any) => { this.nameInput = input}}
+          errorMessage={this.state.nameError}
           />
           
         <UserInputText 
@@ -72,15 +84,15 @@ export default class UserDetails extends React.Component<{
           value={this.state.email} 
           editable={this.state.editar}
           onChangeText={(email: string) => this.setState({email: email})}
+          setRef={(input:any) => { this.emailInput = input}}
+          errorMessage={this.state.emailError}
           />
 
         { this.getRoleFormat()}
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight 
-            onPress={() => {
-              this.setState({editar: !this.state.editar})
-            }}
+            onPress={() => this.editOrSave()}
             style={styles.button}>
             <Text style={styles.textButton}>{this.state.editar ? 'Salvar' : 'Editar'}</Text>
           </TouchableHighlight>
@@ -100,7 +112,68 @@ export default class UserDetails extends React.Component<{
     );
   };
 
+  async editOrSave() {
+    if (!this.state.editar){
+      this.setState({editar: !this.state.editar});
+    }
+    else {
+      var error = false;
+      var isFocus = false; 
 
+      var nomeValidate = validateName(this.state.name);
+
+      this.setState({nameError: nomeValidate.message});
+      if (nomeValidate.error){
+        if (!isFocus) {this.nameInput.focus(); isFocus = true};
+        error = true;
+      }
+
+      var emailValidate = validateEmail(this.state.email);
+
+      this.setState({emailError: emailValidate.message});
+      if (emailValidate.error){
+        if (!isFocus) {this.emailInput.focus(); isFocus = true};
+        error = true;
+      }
+
+      if (!error){
+        this.sendEdit();
+      }
+    }
+  }
+
+
+  async sendEdit() {
+    var self = this;
+    const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+    
+    axios.put(`https://tq-template-server-sample.herokuapp.com/users/${this.props.userId}`,
+    {
+      name: this.state.name,
+      email: this.state.email,
+      role: this.state.role
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      }
+    })
+    .then(function (response: any){
+      self.setState({editar: !self.state.editar});
+      Alert.alert('Edição feita com sucesso!')
+    })
+    .catch(function (error){
+      if (error.response) {
+        var totalError = '';
+        error.response.data.errors.forEach(function (error: any) {
+          totalError += error.message + '\n';
+        });
+        Alert.alert("Falha ao editar.", totalError);
+      }
+    });
+  }
+  
   getRoleFormat() {
     if (this.state.editar){
       return (
