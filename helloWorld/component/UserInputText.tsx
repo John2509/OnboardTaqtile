@@ -12,6 +12,7 @@ export default class UserInputText extends Component<{
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad" | "visible-password" | "ascii-capable" | "numbers-and-punctuation" | "url" | "number-pad" | "name-phone-pad" | "decimal-pad" | "twitter" | "web-search" | undefined
   secureTextEntry?: boolean
   editable?: boolean,
+  value?: string,
 },{
   text: string,
 }>
@@ -21,7 +22,7 @@ export default class UserInputText extends Component<{
   constructor(props: any){
     super(props);
     this.state ={
-      text: "",
+      text: this.props.value || "",
     };
   }
 
@@ -33,6 +34,7 @@ export default class UserInputText extends Component<{
     keyboardType: "default",
     secureTextEntry: false,
     editable: true,
+    value: "",
   };
 
   render() {
@@ -49,7 +51,7 @@ export default class UserInputText extends Component<{
               this.props.onChangeText(text);
               }
             } 
-            value={this.state.text}
+            value={this.props.value || this.state.text}
             keyboardType={this.props.keyboardType}
             blurOnSubmit={false}
             ref={(input) => {this.textRef = input; this.props.setRef(input); }}

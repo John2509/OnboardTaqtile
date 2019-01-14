@@ -1,11 +1,13 @@
 import React from 'react';
 import {
-  View, FlatList, AsyncStorage, Alert
+  View, FlatList, AsyncStorage, Alert, TouchableHighlight, Text
 } from 'react-native';
 import axios from 'axios';
 
 import UserListItem from '../component/UserListItem';
 import { TOKEN_KEY } from '../scr/config';
+import { styles } from '../scr/styles';
+import { Navigation } from 'react-native-navigation';
 
 export default class UserList extends React.Component<{
   componentId: any
@@ -84,6 +86,20 @@ export default class UserList extends React.Component<{
           onEndReached={() => {this.getData()}}
           onEndReachedThreshold={0.45}
         />
+        
+        <View style={[styles.buttonConteiner, {width: '100%', marginBottom: 10, borderTopColor: '#BEC0BE', borderTopWidth: 2}]}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => {
+              Navigation.showModal({
+                component: {
+                  name: 'UserCreate',
+                }
+              });
+            }}>
+            <Text style={styles.textButton}>Criar Usuário</Text>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   };

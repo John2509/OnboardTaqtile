@@ -16,7 +16,6 @@ import { styles } from '../scr/styles'
 import { USER_KEY, TOKEN_KEY } from '../scr/config'
 import { validateEmail, validatePassword } from '../scr/validator';
 import UserInputText from '../component/UserInputText';
-import { Navigation } from 'react-native-navigation';
 
 export default class Login extends Component<{}, { 
   email: string, 
@@ -89,21 +88,6 @@ export default class Login extends Component<{}, {
               <Text style={styles.textButton}>Login</Text>
             </TouchableHighlight>
           </View>
-        </View>
-
-        <View style={[styles.buttonConteiner, {width: '100%'}]}>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={() => {
-              Navigation.showModal({
-                component: {
-                  name: 'UserCreate',
-                }
-              });
-            }}
-            disabled={this.state.loading}>
-            <Text style={styles.textButton}>Cadastre-se</Text>
-          </TouchableHighlight>
         </View>
 
         <Modal
