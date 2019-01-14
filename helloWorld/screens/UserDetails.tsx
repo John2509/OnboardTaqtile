@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, AsyncStorage, Alert, Text, TouchableHighlight
+  View, AsyncStorage, Alert, Text, TouchableHighlight, Picker
 } from 'react-native';
 import axios from 'axios';
 import { Navigation } from 'react-native-navigation';
@@ -15,7 +15,8 @@ export default class UserDetails extends React.Component<{
 },{
   email: string,
   name: string,
-  role: string
+  role: string,
+  editar: boolean
 }> {
 
   constructor(props: any) {
@@ -23,7 +24,8 @@ export default class UserDetails extends React.Component<{
     this.state = {
       email: "",
       name: "",
-      role: ""
+      role: "",
+      editar: false
     };
   }
 
@@ -58,9 +60,31 @@ export default class UserDetails extends React.Component<{
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
 
-        <Text style={[styles.textWelcome, {alignSelf: 'center'}]}>{this.state.name}</Text>
-        <UserInputText title="E-mail" value={this.state.email} editable={false}></UserInputText>
-        <UserInputText title="Função" value={this.state.role} editable={false}></UserInputText>
+        <UserInputText
+          title="Nome" 
+          value={this.state.name} 
+          editable={this.state.editar}
+          onChangeText={(name: string) => this.setState({name: name})}
+          />
+          
+        <UserInputText 
+          title="E-mail" 
+          value={this.state.email} 
+          editable={this.state.editar}
+          onChangeText={(email: string) => this.setState({email: email})}
+          />
+
+        { this.getRoleFormat()}
+
+        <View style={[styles.buttonConteiner, {width: '100%'}]}>
+          <TouchableHighlight 
+            onPress={() => {
+              this.setState({editar: !this.state.editar})
+            }}
+            style={styles.button}>
+            <Text style={styles.textButton}>{this.state.editar ? 'Salvar' : 'Editar'}</Text>
+          </TouchableHighlight>
+        </View>
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight 
@@ -75,6 +99,34 @@ export default class UserDetails extends React.Component<{
       </View>
     );
   };
+
+
+  getRoleFormat() {
+    if (this.state.editar){
+      return (
+        <View style={[styles.inputConteiner, {paddingVertical: 0, paddingBottom: 10}]}>
+          <Text style={[styles.text]}>Função:</Text>
+          <Picker
+            style={[styles.onePicker, {alignSelf:'center'}]} itemStyle={styles.onePickerItem}
+            selectedValue={this.state.role}
+            enabled={this.state.editar}
+            onValueChange={(itemValue) => this.setState({role: itemValue})}>
+            <Picker.Item label="Usuário" value="user" />
+            <Picker.Item label="Administrador" value="admin" />
+          </Picker>
+        </View>
+        )
+    }
+    else {
+      return (
+        <UserInputText 
+          title="Função" 
+          value={this.state.role} 
+          editable={this.state.editar}
+          onChangeText={(role: string) => this.setState({role: role})}/>
+      )
+    }
+  }
 
   static get options() {
     return {
