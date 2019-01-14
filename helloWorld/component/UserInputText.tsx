@@ -1,16 +1,17 @@
 import React , { Component } from "react";
 import { View, Text, TextInput } from "react-native";
 import { styles } from "../scr/styles";
+import PropTypes from "prop-types"
 
 export default class UserInputText extends Component<{
   title: string,
-  onChangeText: any,
-  errorMessage: string,
-  keyboardType: "default" | "email-address" | "numeric" | "phone-pad" | "visible-password" | "ascii-capable" | "numbers-and-punctuation" | "url" | "number-pad" | "name-phone-pad" | "decimal-pad" | "twitter" | "web-search" | undefined
-  setRef: any,
-  onSubmitEditing: any,
-  editable: boolean,
-  secureTextEntry: boolean
+  onChangeText?: any,
+  onSubmitEditing?: any,
+  setRef?: any,
+  errorMessage?: string,
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad" | "visible-password" | "ascii-capable" | "numbers-and-punctuation" | "url" | "number-pad" | "name-phone-pad" | "decimal-pad" | "twitter" | "web-search" | undefined
+  secureTextEntry?: boolean
+  editable?: boolean,
 },{
   text: string,
 }>
@@ -23,6 +24,16 @@ export default class UserInputText extends Component<{
       text: "",
     };
   }
+
+  static defaultProps = {
+    onChangeText: () => {return},
+    onSubmitEditing: () => {return},
+    setRef: () => {return},
+    errorMessage: "",
+    keyboardType: "default",
+    secureTextEntry: false,
+    editable: true,
+  };
 
   render() {
     return (

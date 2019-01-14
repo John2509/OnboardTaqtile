@@ -16,6 +16,7 @@ import { styles } from '../scr/styles'
 import { USER_KEY, TOKEN_KEY } from '../scr/config'
 import { validateEmail, validatePassword } from '../scr/validator';
 import UserInputText from '../component/UserInputText';
+import { Navigation } from 'react-native-navigation';
 
 export default class Login extends Component<{}, { 
   email: string, 
@@ -47,25 +48,23 @@ export default class Login extends Component<{}, {
 
         <UserInputText 
           title='E-mail'
-          onChangeText={(email: string) =>{
+          onChangeText={(email: string) => {
             this.setState({ email: email })}
           } 
           errorMessage={this.state.emailError}
           keyboardType='email-address'
-          setRef={(input: any) => { this.emailInput = input; }}
+          setRef={(input: any) => { this.emailInput = input}}
           onSubmitEditing={() => this.senhaInput.focus()}
           editable={!this.state.loading}
-          secureTextEntry={false}
         />
 
         <UserInputText 
           title='Senha'
-          onChangeText={(senha: string) =>{
+          onChangeText={(senha: string) => {
             this.setState({ senha: senha })}
           } 
           errorMessage={this.state.senhaError}
-          keyboardType='default'
-          setRef={(input: any) => { this.senhaInput = input; }}
+          setRef={(input: any) => { this.senhaInput = input}}
           onSubmitEditing={() => this.onSubmit()}
           editable={!this.state.loading}
           secureTextEntry={true}
@@ -86,11 +85,25 @@ export default class Login extends Component<{}, {
             <TouchableHighlight
               style={styles.button}
               onPress={this.onSubmit}
-              disabled={this.state.loading}
-              >
-              <Text style={styles.textButton}>LOGIN</Text>
+              disabled={this.state.loading}>
+              <Text style={styles.textButton}>Login</Text>
             </TouchableHighlight>
           </View>
+        </View>
+
+        <View style={[styles.buttonConteiner, {width: '100%'}]}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => {
+              Navigation.showModal({
+                component: {
+                  name: 'UserCreate',
+                }
+              });
+            }}
+            disabled={this.state.loading}>
+            <Text style={styles.textButton}>Cadastre-se</Text>
+          </TouchableHighlight>
         </View>
 
         <Modal
@@ -159,7 +172,7 @@ export default class Login extends Component<{}, {
       error = true;
     }
 
-    var passwordValidate = validatePassword(this.state.senha);
+    var passwordValidate = validatePassword(this.state.senha, 4);
 
     this.setState({senhaError: passwordValidate.message});
     if (passwordValidate.error){

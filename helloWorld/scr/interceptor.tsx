@@ -7,7 +7,6 @@ import { Navigation } from 'react-native-navigation';
 export function addInterceptor (){
   axios.interceptors.request.use(
     function (config) {
-      //console.log(config.headers.Authorization);
       return config;
     }, 
     function (error) {

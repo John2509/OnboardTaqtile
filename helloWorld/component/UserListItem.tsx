@@ -34,15 +34,11 @@ class UserListItem extends Component<{
           }}
           onPress={() => {
             Navigation.showModal({
-              stack: {
-                children: [{
-                  component: {
-                    name: 'UserDetails',
-                    passProps: {
-                      userId: this.props.user.item.id
-                    },
-                  }
-                }]
+              component: {
+                name: 'UserDetails',
+                passProps: {
+                  userId: this.props.user.item.id
+                },
               }
             });
           }}>

@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FEFDFF',
   },
   inputConteiner: {
-    width: Dimensions.get('window').width, 
+    width: '100%', 
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
@@ -77,5 +77,17 @@ export const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  onePicker: {
+    width: '100%',
+    height: 100,
+    backgroundColor: 'white',
+    borderBottomColor: '#800080',
+    borderBottomWidth: 1,
+    borderTopWidth: 0
+  },
+  onePickerItem: {
+    height: 100,
+    color: 'black'
   }
 });
