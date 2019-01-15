@@ -11,32 +11,24 @@ import { TOKEN_KEY } from "../scr/config";
 export default class UserCreate extends Component<{
   componentId: any,
 },{
-  nome: string,
+  name: string,
   email: string,
-  senha: string,
-  funcao: string,
-
-  nomeError: string,
-  emailError: string,
-  senhaError: string,
+  password: string,
+  role: string,
 
   loading: boolean,
 }>{
-  private nomeInput: any
-  private emailInput: any
-  private senhaInput: any
+  private nameInput: UserInputText | null = null;
+  private emailInput: UserInputText | null = null;
+  private passwordInput: UserInputText | null = null;
 
   constructor(props: any) {
     super(props)
     this.state = {
-      nome: '',
+      name: '',
       email: '',
-      senha: '',
-      funcao: '',
-
-      nomeError: '',
-      emailError: '',
-      senhaError: '',
+      password: '',
+      role: 'user',
 
       loading: false,
     }
@@ -48,45 +40,44 @@ export default class UserCreate extends Component<{
 
         <UserInputText 
           title='Nome'
-          onChangeText={(nome: string) => {
-            this.setState({ nome: nome})
+          onChangeText={(name: string) => {
+            this.setState({ name: name})
           }}
-          errorMessage={this.state.nomeError}
-          setRef={(input:any) => { this.nomeInput = input}}
-          onSubmitEditing={() => this.emailInput.focus()}
+          ref={(input) => this.nameInput = input}
+          onSubmitEditing={() => { if (this.emailInput) this.emailInput.focus()}}
           editable={!this.state.loading}
-          value={this.state.nome}
-          />
+          value={this.state.name}
+          validator={validateName}/>
 
         <UserInputText title='E-mail'
           onChangeText={(email: string) => {
             this.setState({ email: email})
           }}
           keyboardType='email-address'
-          errorMessage={this.state.emailError}
-          setRef={(input:any) => { this.emailInput = input}}
-          onSubmitEditing={() => this.senhaInput.focus()}
+          ref={(input) => { this.emailInput = input}}
+          onSubmitEditing={() => { if (this.passwordInput) this.passwordInput.focus()}}
           editable={!this.state.loading}
-          value={this.state.email}/>
+          value={this.state.email}
+          validator={validateEmail}/>
 
         <UserInputText title='Senha'
-          onChangeText={(senha: string) => {
-            this.setState({ senha: senha})
+          onChangeText={(password: string) => {
+            this.setState({ password: password})
           }}
           secureTextEntry={true}
-          errorMessage={this.state.senhaError}
-          setRef={(input:any) => { this.senhaInput = input}}
+          ref={(input) => { this.passwordInput = input}}
           onSubmitEditing={() => this.onSubmit()}
           editable={!this.state.loading}
-          value={this.state.senha}/>
+          value={this.state.password}
+          validator={validatePassword}/>
 
         <View style={[styles.inputConteiner, {paddingVertical: 0, paddingBottom: 10}]}>
           <Text style={[styles.text]}>Função:</Text>
           <Picker
             style={[styles.onePicker, {alignSelf:'center'}]} itemStyle={styles.onePickerItem}
-            selectedValue={this.state.funcao}
+            selectedValue={this.state.role}
             enabled={!this.state.loading}
-            onValueChange={(itemValue) => this.setState({funcao: itemValue})}>
+            onValueChange={(itemValue) => this.setState({role: itemValue})}>
             <Picker.Item label="Usuário" value="user" />
             <Picker.Item label="Administrador" value="admin" />
           </Picker>
@@ -135,27 +126,18 @@ export default class UserCreate extends Component<{
     var error = false;
     var isFocus = false; 
 
-    var nomeValidate = validateName(this.state.nome);
-
-    this.setState({nomeError: nomeValidate.message});
-    if (nomeValidate.error){
-      if (!isFocus) {this.nomeInput.focus(); isFocus = true};
+    if (this.nameInput && !this.nameInput.isValid()){
+      if (!isFocus) {this.nameInput.focus(); isFocus = true};
       error = true;
     }
 
-    var emailValidate = validateEmail(this.state.email);
-
-    this.setState({emailError: emailValidate.message});
-    if (emailValidate.error){
+    if (this.emailInput && !this.emailInput.isValid()){
       if (!isFocus) {this.emailInput.focus(); isFocus = true};
       error = true;
     }
 
-    var passwordValidate = validatePassword(this.state.senha);
-
-    this.setState({senhaError: passwordValidate.message});
-    if (passwordValidate.error){
-      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
+    if ( this.passwordInput && !this.passwordInput.isValid()){
+      if (!isFocus) {this.passwordInput.focus(); isFocus = true};
       error = true;
     }
 
@@ -189,10 +171,10 @@ export default class UserCreate extends Component<{
 
     axios.post('https://tq-template-server-sample.herokuapp.com/users/', 
       {
-        name: this.state.nome,
-        password: this.state.senha,
+        name: this.state.name,
+        password: this.state.password,
         email: this.state.email,
-        role: this.state.funcao
+        role: this.state.role
       },
       {
         headers: {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  TextInput, 
+import {
   Text, 
   View, 
   TouchableHighlight, 
@@ -19,24 +19,20 @@ import UserInputText from '../component/UserInputText';
 
 export default class Login extends Component<{}, { 
   email: string, 
-  senha: string, 
+  password: string, 
   loading: boolean,
-  emailError: string,
-  senhaError: string,
   rememberMe: boolean,
 }> 
 {
-  private emailInput: any;
-  private senhaInput: any;
+  private emailInput: UserInputText | null = null;
+  private passwordInput: UserInputText | null = null;
 
   constructor(props: any) {
     super(props);
     this.state = { 
       email: '', 
-      senha: '' , 
+      password: '' , 
       loading: false,
-      emailError: '',
-      senhaError: '',
       rememberMe: false,
     };
   }
@@ -50,23 +46,25 @@ export default class Login extends Component<{}, {
           onChangeText={(email: string) => {
             this.setState({ email: email })}
           } 
-          errorMessage={this.state.emailError}
           keyboardType='email-address'
-          setRef={(input: any) => { this.emailInput = input}}
-          onSubmitEditing={() => this.senhaInput.focus()}
+          ref={(input) => { this.emailInput = input}}
+          onSubmitEditing={() => { if (this.passwordInput) this.passwordInput.focus()}}
           editable={!this.state.loading}
+          value={this.state.email}
+          validator={validateEmail}
         />
 
         <UserInputText 
           title='Senha'
-          onChangeText={(senha: string) => {
-            this.setState({ senha: senha })}
+          onChangeText={(password: string) => {
+            this.setState({ password: password })}
           } 
-          errorMessage={this.state.senhaError}
-          setRef={(input: any) => { this.senhaInput = input}}
+          ref={(input) => { this.passwordInput = input}}
           onSubmitEditing={() => this.onSubmit()}
           editable={!this.state.loading}
           secureTextEntry={true}
+          validator={validatePassword}
+          value={this.state.password}
         />
 
         <View style={styles.bottomConteiner}>
@@ -110,7 +108,7 @@ export default class Login extends Component<{}, {
     this.setState({ 
       loading: false, 
       email : '', 
-      senha : ''
+      password : ''
     },
       () => setTimeout( () => {
         Alert.alert(alertMessage, alertDetais)
@@ -121,7 +119,7 @@ export default class Login extends Component<{}, {
   loginRequest = async () => {
     var self = this;
     axios.post('https://tq-template-server-sample.herokuapp.com/authenticate/', {
-      password: this.state.senha,
+      password: this.state.password,
       email: this.state.email,
       rememberMe: this.state.rememberMe
     })
@@ -148,19 +146,13 @@ export default class Login extends Component<{}, {
     var error = false;
     var isFocus = false; 
 
-    var emailValidate = validateEmail(this.state.email);
-
-    this.setState({emailError: emailValidate.message});
-    if (emailValidate.error){
+    if (this.emailInput && !this.emailInput.isValid()){
       if (!isFocus) {this.emailInput.focus(); isFocus = true};
       error = true;
     }
 
-    var passwordValidate = validatePassword(this.state.senha, 4);
-
-    this.setState({senhaError: passwordValidate.message});
-    if (passwordValidate.error){
-      if (!isFocus) {this.senhaInput.focus(); isFocus = true};
+    if (this.passwordInput && !this.passwordInput.isValid(4)){
+      if (!isFocus) {this.passwordInput.focus(); isFocus = true};
       error = true;
     }
 

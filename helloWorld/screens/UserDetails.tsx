@@ -17,14 +17,11 @@ export default class UserDetails extends React.Component<{
   email: string,
   name: string,
   role: string,
-  editar: boolean,
-
-  nameError: string
-  emailError: string,
+  edit: boolean,
 }> {
 
-  private nameInput: any;
-  private emailInput: any;
+  private nameInput: UserInputText | null = null;
+  private emailInput: UserInputText | null = null;
 
   constructor(props: any) {
     super(props);
@@ -32,10 +29,7 @@ export default class UserDetails extends React.Component<{
       email: "",
       name: "",
       role: "",
-      editar: false,
-
-      nameError: '',
-      emailError: '',
+      edit: false,
     };
   }
 
@@ -73,19 +67,22 @@ export default class UserDetails extends React.Component<{
         <UserInputText
           title="Nome" 
           value={this.state.name} 
-          editable={this.state.editar}
+          editable={this.state.edit}
           onChangeText={(name: string) => this.setState({name: name})}
-          setRef={(input:any) => { this.nameInput = input}}
-          errorMessage={this.state.nameError}
+          ref={(input) => { this.nameInput = input}}
+          validator={validateName}
+          onSubmitEditing={() => { if (this.emailInput) this.emailInput.focus()}}
           />
           
         <UserInputText 
           title="E-mail" 
           value={this.state.email} 
-          editable={this.state.editar}
+          editable={this.state.edit}
           onChangeText={(email: string) => this.setState({email: email})}
-          setRef={(input:any) => { this.emailInput = input}}
-          errorMessage={this.state.emailError}
+          ref={(input) => { this.emailInput = input}}
+          keyboardType='email-address'
+          validator={validateEmail}
+          onSubmitEditing={() => this.editOrSave()}
           />
 
         { this.getRoleFormat()}
@@ -94,7 +91,7 @@ export default class UserDetails extends React.Component<{
           <TouchableHighlight 
             onPress={() => this.editOrSave()}
             style={styles.button}>
-            <Text style={styles.textButton}>{this.state.editar ? 'Salvar' : 'Editar'}</Text>
+            <Text style={styles.textButton}>{this.state.edit ? 'Salvar' : 'Editar'}</Text>
           </TouchableHighlight>
         </View>
 
@@ -113,25 +110,19 @@ export default class UserDetails extends React.Component<{
   };
 
   async editOrSave() {
-    if (!this.state.editar){
-      this.setState({editar: !this.state.editar});
+    if (!this.state.edit){
+      this.setState({edit: !this.state.edit});
     }
     else {
       var error = false;
       var isFocus = false; 
 
-      var nomeValidate = validateName(this.state.name);
-
-      this.setState({nameError: nomeValidate.message});
-      if (nomeValidate.error){
+      if (this.nameInput && !this.nameInput.isValid()){
         if (!isFocus) {this.nameInput.focus(); isFocus = true};
         error = true;
       }
-
-      var emailValidate = validateEmail(this.state.email);
-
-      this.setState({emailError: emailValidate.message});
-      if (emailValidate.error){
+  
+      if (this.emailInput && !this.emailInput.isValid()){
         if (!isFocus) {this.emailInput.focus(); isFocus = true};
         error = true;
       }
@@ -160,7 +151,7 @@ export default class UserDetails extends React.Component<{
       }
     })
     .then(function (response: any){
-      self.setState({editar: !self.state.editar});
+      self.setState({edit: !self.state.edit});
       Alert.alert('Edição feita com sucesso!')
     })
     .catch(function (error){
@@ -175,14 +166,14 @@ export default class UserDetails extends React.Component<{
   }
   
   getRoleFormat() {
-    if (this.state.editar){
+    if (this.state.edit){
       return (
         <View style={[styles.inputConteiner, {paddingVertical: 0, paddingBottom: 10}]}>
           <Text style={[styles.text]}>Função:</Text>
           <Picker
             style={[styles.onePicker, {alignSelf:'center'}]} itemStyle={styles.onePickerItem}
             selectedValue={this.state.role}
-            enabled={this.state.editar}
+            enabled={this.state.edit}
             onValueChange={(itemValue) => this.setState({role: itemValue})}>
             <Picker.Item label="Usuário" value="user" />
             <Picker.Item label="Administrador" value="admin" />
@@ -195,7 +186,7 @@ export default class UserDetails extends React.Component<{
         <UserInputText 
           title="Função" 
           value={this.state.role} 
-          editable={this.state.editar}
+          editable={this.state.edit}
           onChangeText={(role: string) => this.setState({role: role})}/>
       )
     }

@@ -1,5 +1,5 @@
 import React, { Component, Props } from 'react';
-import { View, Text, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { styles } from '../scr/styles';
 import { Navigation } from 'react-native-navigation';
 

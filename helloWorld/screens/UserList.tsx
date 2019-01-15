@@ -19,7 +19,6 @@ export default class UserList extends React.Component<{
     id: number
   }[],
   page: number,
-  componentID: string,
 }> {
 
   constructor(props: any) {
@@ -27,7 +26,6 @@ export default class UserList extends React.Component<{
     this.state = { 
       listData: [],
       page: 0,
-      componentID: this.props.componentId
     };
   }
 
