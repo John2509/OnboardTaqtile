@@ -5,15 +5,14 @@ import { validator } from "../scr/validator";
 
 export default class UserInputText extends Component<{
   title: string,
-  onChangeText?: any,
+  value: string,
+  onChangeText: {(text: string): void},
   onSubmitEditing?: any,
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad" | "visible-password" | "ascii-capable" | "numbers-and-punctuation" | "url" | "number-pad" | "name-phone-pad" | "decimal-pad" | "twitter" | "web-search" | undefined
   secureTextEntry?: boolean
   editable?: boolean,
-  value?: string,
   validator?: validator,
 },{
-  text: string,
   errorMessage: string,
 }>
 {
@@ -22,7 +21,6 @@ export default class UserInputText extends Component<{
   constructor(props: any){
     super(props);
     this.state ={
-      text: this.props.value || "",
       errorMessage: '',
     };
   }
@@ -46,11 +44,10 @@ export default class UserInputText extends Component<{
             secureTextEntry={this.props.secureTextEntry}
             style={styles.textInput}
             onChangeText={(text) =>{
-              this.setState({ text: text });
               this.props.onChangeText(text);
               }
             } 
-            value={this.props.value || this.state.text}
+            value={this.props.value}
             keyboardType={this.props.keyboardType}
             blurOnSubmit={false}
             ref={(input) => {this.textRef = input}}
@@ -69,7 +66,7 @@ export default class UserInputText extends Component<{
 
   public isValid(size?: number) : boolean {
     if (this.props.validator){
-      var validate = this.props.validator(this.state.text, size);
+      var validate = this.props.validator(this.props.value, size);
       this.setState({errorMessage: validate.message});
       return validate.valid;
     }

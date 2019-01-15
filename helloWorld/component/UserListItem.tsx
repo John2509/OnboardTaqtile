@@ -3,9 +3,23 @@ import { View, Text, TouchableHighlight } from 'react-native';
 import { styles } from '../scr/styles';
 import { Navigation } from 'react-native-navigation';
 
-class UserListItem extends Component<{
-  user: any
+export interface user {
+  username : string,
+  role : string,
+  id : number
+}
+
+export default class UserListItem extends Component<{
+  user: {
+    item: user,
+    index: number
+  },
+  onChangeUser: {(editedUser: user, index: number): void}
 }, {}> {
+
+  private onChangeUser(editedUser: user){
+    this.props.onChangeUser(editedUser, this.props.user.index);
+  }
 
   render() {
     return (
@@ -37,7 +51,8 @@ class UserListItem extends Component<{
               component: {
                 name: 'UserDetails',
                 passProps: {
-                  userId: this.props.user.item.id
+                  userId: this.props.user.item.id,
+                  onChangeUser: (editedUser: user) => this.onChangeUser(editedUser),
                 },
               }
             });
@@ -56,5 +71,3 @@ class UserListItem extends Component<{
     )
   }
 }
-
-export default UserListItem

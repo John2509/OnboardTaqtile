@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-import UserListItem from '../component/UserListItem';
+import UserListItem, { user } from '../component/UserListItem';
 import { TOKEN_KEY } from '../scr/config';
 import { styles } from '../scr/styles';
 import { Navigation } from 'react-native-navigation';
@@ -12,12 +12,7 @@ import { Navigation } from 'react-native-navigation';
 export default class UserList extends React.Component<{
   componentId: any
 },{
-  listData: {
-    key: string,
-    username: string,
-    role: string,
-    id: number
-  }[],
+  listData: Array<user>,
   page: number,
 }> {
 
@@ -33,13 +28,21 @@ export default class UserList extends React.Component<{
     this.getData();
   }
 
-  renderItem(user: any) {
-    return <UserListItem user={user}/>
-  };
+  private renderItem(user: any) {
+    return <UserListItem 
+      user={user} 
+      onChangeUser={(editedUser: user, index: number) => this.onChangeUser(editedUser, index)}/>
+  }
+
+  private onChangeUser(editedUser: user, index: number){
+    var list = this.state.listData;
+    list[index] = editedUser;
+    this.setState({listData: list});
+  }
 
   async getData() {
 
-    var res = this.state.listData;
+    var list = this.state.listData;
     var page = this.state.page;
     var self = this;
 
@@ -58,14 +61,13 @@ export default class UserList extends React.Component<{
     })
     .then(function (response: any){
       response.data.data.forEach((user: any) => {
-        res.push({
-          key: user.id.toString(),
+        list.push({
           username: user.name,
           role: user.role,
           id: user.id
         });
       });
-      self.setState({listData: res, page: page+1});
+      self.setState({listData: list, page: page+1});
     })
     .catch(function (error){
       console.log(error);
@@ -78,11 +80,12 @@ export default class UserList extends React.Component<{
       <View style={{flex: 1, alignContent: 'center'}}>
         <FlatList
           data= {this.state.listData}
-          renderItem={this.renderItem}
+          renderItem={(user) => this.renderItem(user)}
           ItemSeparatorComponent={this.renderSeparator}
           style={{flex:1}}
           onEndReached={() => {this.getData()}}
-          onEndReachedThreshold={0.45}
+          onEndReachedThreshold={0.5}
+          keyExtractor= {(item: user) => item.id.toString()}
         />
         
         <View style={[styles.buttonConteiner, {width: '100%', marginBottom: 10, borderTopColor: '#BEC0BE', borderTopWidth: 2}]}>

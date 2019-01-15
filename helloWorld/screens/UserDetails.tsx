@@ -9,9 +9,11 @@ import { styles } from '../scr/styles';
 import { TOKEN_KEY } from '../scr/config';
 import UserInputText from '../component/UserInputText';
 import { validateName, validateEmail } from '../scr/validator';
+import { user } from '../component/UserListItem';
 
 export default class UserDetails extends React.Component<{
   userId: number,
+  onChangeUser: {(editedUser: user): void}
   componentId: any
 },{
   email: string,
@@ -85,7 +87,7 @@ export default class UserDetails extends React.Component<{
           onSubmitEditing={() => this.editOrSave()}
           />
 
-        { this.getRoleFormat()}
+        { this.getRoleFormat() }
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight 
@@ -97,9 +99,7 @@ export default class UserDetails extends React.Component<{
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight 
-            onPress={() => {
-              Navigation.dismissModal(this.props.componentId)}
-            }
+            onPress={() => {this.close()}}
             style={styles.button}>
             <Text style={styles.textButton}>Fechar</Text>
           </TouchableHighlight>
@@ -108,6 +108,16 @@ export default class UserDetails extends React.Component<{
       </View>
     );
   };
+
+  private close() {
+    var editedUser: user = {
+      id: this.props.userId,
+      username: this.state.name,
+      role: this.state.role
+    };
+    this.props.onChangeUser(editedUser);
+    Navigation.dismissModal(this.props.componentId);
+  }
 
   async editOrSave() {
     if (!this.state.edit){
