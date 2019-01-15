@@ -1,15 +1,17 @@
 import React from 'react';
 import {
-  View, AsyncStorage, Alert, Text, TouchableHighlight, Picker
+  View, Alert, Text, TouchableHighlight, Picker
 } from 'react-native';
 import axios from 'axios';
 import { Navigation } from 'react-native-navigation';
 
 import { styles } from '../styles';
-import { TOKEN_KEY } from '../../data/config';
+import { KEYS } from '../../data/config';
 import UserInputText from '../components/UserInputText';
-import { validateName, validateEmail } from '../../domain/validator';
 import { user } from '../components/UserListItem';
+import ValidatorName from '../../domain/ValidatorName';
+import ValidatorEmail from '../../domain/ValidatorEmail';
+import { LocalData } from '../../data/LocalData';
 
 export default class UserDetails extends React.Component<{
   userId: number,
@@ -25,6 +27,8 @@ export default class UserDetails extends React.Component<{
   private nameInput: UserInputText | null = null;
   private emailInput: UserInputText | null = null;
 
+  private localData: LocalData;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -33,6 +37,7 @@ export default class UserDetails extends React.Component<{
       role: "",
       edit: false,
     };
+    this.localData = new LocalData();
   }
 
   componentDidMount() {
@@ -42,7 +47,7 @@ export default class UserDetails extends React.Component<{
   async getData() {
     var self = this;
 
-    const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+    const token = await this.localData.get(KEYS.TOKEN_KEY);
     
     axios.get(`https://tq-template-server-sample.herokuapp.com/users/${this.props.userId}` , {
       headers: {
@@ -72,7 +77,7 @@ export default class UserDetails extends React.Component<{
           editable={this.state.edit}
           onChangeText={(name: string) => this.setState({name: name})}
           ref={(input) => { this.nameInput = input}}
-          validator={validateName}
+          validator={new ValidatorName()}
           onSubmitEditing={() => { if (this.emailInput) this.emailInput.focus()}}
           />
           
@@ -83,7 +88,7 @@ export default class UserDetails extends React.Component<{
           onChangeText={(email: string) => this.setState({email: email})}
           ref={(input) => { this.emailInput = input}}
           keyboardType='email-address'
-          validator={validateEmail}
+          validator={new ValidatorEmail()}
           onSubmitEditing={() => this.editOrSave()}
           />
 
@@ -146,7 +151,7 @@ export default class UserDetails extends React.Component<{
 
   async sendEdit() {
     var self = this;
-    const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+    const token = await this.localData.get(KEYS.TOKEN_KEY);
     
     axios.put(`https://tq-template-server-sample.herokuapp.com/users/${this.props.userId}`,
     {

@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator, AsyncStorage} from "react-native";
+import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator} from "react-native";
 import { Navigation } from "react-native-navigation";
 import axios from 'axios';
 
 import UserInputText from "../components/UserInputText";
 import { styles } from "../styles";
-import { validateEmail, validatePassword, validateName } from "../../domain/validator";
-import { TOKEN_KEY } from "../../data/config";
+import { KEYS } from "../../data/config";
+import ValidatorName from "../../domain/ValidatorName";
+import ValidatorEmail from "../../domain/ValidatorEmail";
+import ValidatorPassword from "../../domain/ValidatorPassword";
+import { LocalData } from "../../data/LocalData";
 
 export default class UserCreate extends Component<{
   componentId: any,
@@ -22,6 +25,8 @@ export default class UserCreate extends Component<{
   private emailInput: UserInputText | null = null;
   private passwordInput: UserInputText | null = null;
 
+  private localData: LocalData;
+
   constructor(props: any) {
     super(props)
     this.state = {
@@ -32,6 +37,7 @@ export default class UserCreate extends Component<{
 
       loading: false,
     }
+    this.localData = new LocalData();
   }
 
   render() {
@@ -47,7 +53,7 @@ export default class UserCreate extends Component<{
           onSubmitEditing={() => { if (this.emailInput) this.emailInput.focus()}}
           editable={!this.state.loading}
           value={this.state.name}
-          validator={validateName}/>
+          validator={new ValidatorName()}/>
 
         <UserInputText title='E-mail'
           onChangeText={(email: string) => {
@@ -58,7 +64,7 @@ export default class UserCreate extends Component<{
           onSubmitEditing={() => { if (this.passwordInput) this.passwordInput.focus()}}
           editable={!this.state.loading}
           value={this.state.email}
-          validator={validateEmail}/>
+          validator={new ValidatorEmail()}/>
 
         <UserInputText title='Senha'
           onChangeText={(password: string) => {
@@ -69,7 +75,7 @@ export default class UserCreate extends Component<{
           onSubmitEditing={() => this.onSubmit()}
           editable={!this.state.loading}
           value={this.state.password}
-          validator={validatePassword}/>
+          validator={new ValidatorPassword()}/>
 
         <View style={[styles.inputConteiner, {paddingVertical: 0, paddingBottom: 10}]}>
           <Text style={[styles.text]}>Função:</Text>
@@ -167,7 +173,7 @@ export default class UserCreate extends Component<{
   async createRequest() {
     var self = this;
 
-    const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+    const token = await this.localData.get(KEYS.TOKEN_KEY);
 
     axios.post('https://tq-template-server-sample.herokuapp.com/users/', 
       {

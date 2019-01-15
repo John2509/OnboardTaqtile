@@ -1,13 +1,14 @@
 import React from 'react';
 import {
-  View, FlatList, AsyncStorage, Alert, TouchableHighlight, Text
+  View, FlatList, Alert, TouchableHighlight, Text
 } from 'react-native';
 import axios from 'axios';
 
 import UserListItem, { user } from '../components/UserListItem';
-import { TOKEN_KEY } from '../../data/config';
+import { KEYS } from '../../data/config';
 import { styles } from '../styles';
 import { Navigation } from 'react-native-navigation';
+import { LocalData } from '../../data/LocalData';
 
 export default class UserList extends React.Component<{
   componentId: any
@@ -16,12 +17,15 @@ export default class UserList extends React.Component<{
   page: number,
 }> {
 
+  private localData: LocalData;
+
   constructor(props: any) {
     super(props);
     this.state = { 
       listData: [],
       page: 0,
     };
+    this.localData = new LocalData();
   }
 
   componentDidMount() {
@@ -46,7 +50,7 @@ export default class UserList extends React.Component<{
     var page = this.state.page;
     var self = this;
 
-    const token = await AsyncStorage.getItem(TOKEN_KEY) || '';
+    const token = await this.localData.get(KEYS.TOKEN_KEY);
     
     axios.get('https://tq-template-server-sample.herokuapp.com/users', {
       params: {

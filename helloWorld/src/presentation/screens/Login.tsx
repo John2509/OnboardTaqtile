@@ -6,16 +6,17 @@ import {
   Alert, 
   ActivityIndicator, 
   Modal, 
-  Switch,
-  AsyncStorage,
+  Switch
 } from 'react-native';
 import axios from 'axios';
 
 import { goHome } from '../../core/navigation'
 import { styles } from '../styles'
-import { USER_KEY, TOKEN_KEY } from '../../data/config'
-import { validateEmail, validatePassword } from '../../domain/validator';
+import { KEYS } from '../../data/config'
 import UserInputText from '../components/UserInputText';
+import ValidatorEmail from '../../domain/ValidatorEmail';
+import ValidatorPassword from '../../domain/ValidatorPassword';
+import { LocalData } from '../../data/LocalData';
 
 export default class Login extends Component<{}, { 
   email: string, 
@@ -26,6 +27,7 @@ export default class Login extends Component<{}, {
 {
   private emailInput: UserInputText | null = null;
   private passwordInput: UserInputText | null = null;
+  private localData: LocalData;
 
   constructor(props: any) {
     super(props);
@@ -35,6 +37,7 @@ export default class Login extends Component<{}, {
       loading: false,
       rememberMe: false,
     };
+    this.localData = new LocalData();
   }
 
   render() {
@@ -51,7 +54,7 @@ export default class Login extends Component<{}, {
           onSubmitEditing={() => { if (this.passwordInput) this.passwordInput.focus()}}
           editable={!this.state.loading}
           value={this.state.email}
-          validator={validateEmail}
+          validator={new ValidatorEmail()}
         />
 
         <UserInputText 
@@ -63,7 +66,7 @@ export default class Login extends Component<{}, {
           onSubmitEditing={() => this.onSubmit()}
           editable={!this.state.loading}
           secureTextEntry={true}
-          validator={validatePassword}
+          validator={new ValidatorPassword()}
           value={this.state.password}
         />
 
@@ -124,7 +127,8 @@ export default class Login extends Component<{}, {
       rememberMe: this.state.rememberMe
     })
     .then(function (response: any){
-      AsyncStorage.multiSet([[USER_KEY, response.data.data.user.name],[TOKEN_KEY, response.data.data.token]]);
+      self.localData.set(KEYS.USER_KEY, response.data.data.user.name);
+      self.localData.set(KEYS.TOKEN_KEY, response.data.data.token);
       self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + response.data.data.user.name);
       goHome();
     })

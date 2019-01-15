@@ -2,7 +2,6 @@ import React from 'react'
 import {
   View,
   Text,
-  AsyncStorage,
   Alert,
   TouchableHighlight
 } from 'react-native'
@@ -10,7 +9,8 @@ import { Navigation } from 'react-native-navigation';
 
 import { goToAuth } from '../../core/navigation';
 import { styles } from '../styles';
-import { USER_KEY, TOKEN_KEY } from '../../data/config';
+import { KEYS } from '../../data/config';
+import { LocalData } from '../../data/LocalData';
 
 export default class HomePage extends React.Component<{
   componentId: any,
@@ -18,12 +18,26 @@ export default class HomePage extends React.Component<{
   name: string,
 }> 
 {
+  private localData: LocalData;
+
   constructor(props: any){
     super(props);
     this.state = {
       name: "",
     }
-    AsyncStorage.getItem(USER_KEY).then((name) => this.setState({name : name || ""}));
+    this.localData = new LocalData();
+    this.localData.get(KEYS.USER_KEY).then((name) => this.setState({name : name || ""}));
+  }
+
+  async logout() {
+    try {
+      await this.localData.remove(KEYS.USER_KEY);
+      await this.localData.remove(KEYS.TOKEN_KEY);
+      goToAuth();
+    } catch (err) {
+      Alert.alert('Erro ao logout...: ', err);
+      goToAuth();
+    }
   }
 
   render() {
@@ -45,7 +59,7 @@ export default class HomePage extends React.Component<{
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight
-            onPress={ this.logout }
+            onPress={() => this.logout() }
             style={styles.button}>
             <Text style={styles.textButton}>Logout</Text>
           </TouchableHighlight>
@@ -64,16 +78,5 @@ export default class HomePage extends React.Component<{
         drawBehind: true,
       }
     };
-  }
-  
-  logout = async () => {
-    try {
-      await AsyncStorage.removeItem(USER_KEY);
-      await AsyncStorage.removeItem(TOKEN_KEY);
-      goToAuth();
-    } catch (err) {
-      Alert.alert('Erro ao logout...: ', err);
-      goToAuth();
-    }
   }
 }

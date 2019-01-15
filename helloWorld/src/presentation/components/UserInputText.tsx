@@ -1,7 +1,7 @@
 import React , { Component } from "react";
 import { View, Text, TextInput } from "react-native";
 import { styles } from "../styles";
-import { validator } from "../../domain/validator";
+import { IValidator } from "../../domain/IValidator";
 
 export default class UserInputText extends Component<{
   title: string,
@@ -11,7 +11,7 @@ export default class UserInputText extends Component<{
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad" | "visible-password" | "ascii-capable" | "numbers-and-punctuation" | "url" | "number-pad" | "name-phone-pad" | "decimal-pad" | "twitter" | "web-search" | undefined
   secureTextEntry?: boolean
   editable?: boolean,
-  validator?: validator,
+  validator?: IValidator,
 },{
   errorMessage: string,
 }>
@@ -66,7 +66,7 @@ export default class UserInputText extends Component<{
 
   public isValid(size?: number) : boolean {
     if (this.props.validator){
-      var validate = this.props.validator(this.props.value, size);
+      var validate = this.props.validator.validate(this.props.value, size);
       this.setState({errorMessage: validate.message});
       return validate.valid;
     }
