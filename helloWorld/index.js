@@ -1,5 +1,5 @@
 import {Navigation} from 'react-native-navigation';
-import {registerScreens} from './src/presentation/screens';
+import {registerScreens} from './src/core/screens';
 import {addInterceptor} from './src/data/interceptor';
 
 registerScreens();

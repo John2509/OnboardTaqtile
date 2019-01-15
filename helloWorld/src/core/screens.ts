@@ -1,10 +1,10 @@
-const { Navigation } = require('react-native-navigation');
-import Login from './screens/Login';
-import HomePage from './screens/HomePage';
-import Initializing from './screens/Initializing';
-import UserList from './screens/UserList';
-import UserDetails from './screens/UserDetails';
-import UserCreate from './screens/UserCreate';
+import { Navigation } from 'react-native-navigation';
+import Login from '../presentation/screens/Login';
+import HomePage from '../presentation/screens/HomePage';
+import Initializing from '../presentation/screens/Initializing';
+import UserList from '../presentation/screens/UserList';
+import UserDetails from '../presentation/screens/UserDetails';
+import UserCreate from '../presentation/screens/UserCreate';
 
 export function registerScreens() {
   Navigation.registerComponent('Login', () => Login);

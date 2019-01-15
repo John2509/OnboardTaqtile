@@ -5,9 +5,8 @@ import {
   Alert,
   TouchableHighlight
 } from 'react-native'
-import { Navigation } from 'react-native-navigation';
 
-import { goToAuth } from '../../core/navigation';
+import { goToAuth, pushScreen } from '../../core/navigation';
 import { styles } from '../styles';
 import { KEYS } from '../../data/config';
 import { LocalData } from '../../data/LocalData';
@@ -47,11 +46,7 @@ export default class HomePage extends React.Component<{
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight
-            onPress={ () => Navigation.push(this.props.componentId, {
-              component: {
-                name: 'UserList',
-              }
-            })}
+            onPress={ () => pushScreen(this.props.componentId, 'UserList')}
             style={styles.button}>
             <Text style={styles.textButton}>Lista de Usuários</Text>
           </TouchableHighlight>
