@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View, Alert, Text, TouchableHighlight, Picker
 } from 'react-native';
-import axios from 'axios';
 import { Navigation } from 'react-native-navigation';
 
 import { styles } from '../styles';
@@ -12,6 +11,7 @@ import { user } from '../components/UserListItem';
 import ValidatorName from '../../domain/ValidatorName';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import { LocalData } from '../../data/LocalData';
+import { ApiData } from '../../data/ApiData';
 
 export default class UserDetails extends React.Component<{
   userId: number,
@@ -28,6 +28,7 @@ export default class UserDetails extends React.Component<{
   private emailInput: UserInputText | null = null;
 
   private localData: LocalData;
+  private apiData: ApiData;
 
   constructor(props: any) {
     super(props);
@@ -38,6 +39,7 @@ export default class UserDetails extends React.Component<{
       edit: false,
     };
     this.localData = new LocalData();
+    this.apiData = new ApiData();
   }
 
   componentDidMount() {
@@ -48,12 +50,8 @@ export default class UserDetails extends React.Component<{
     var self = this;
 
     const token = await this.localData.get(KEYS.TOKEN_KEY);
-    
-    axios.get(`https://tq-template-server-sample.herokuapp.com/users/${this.props.userId}` , {
-      headers: {
-        Authorization: token,
-      }
-    })
+
+    this.apiData.getUser(this.props.userId, token)
     .then(function (response: any){
       self.setState({
         email: response.data.data.email,
@@ -61,7 +59,7 @@ export default class UserDetails extends React.Component<{
         role: response.data.data.role
       })
     })
-    .catch(function (error){
+    .catch(function (error: any){
       console.log(error);
       Alert.alert('Um erro ocorreu ao buscar os detalhes do usuário');
     });
@@ -152,19 +150,8 @@ export default class UserDetails extends React.Component<{
   async sendEdit() {
     var self = this;
     const token = await this.localData.get(KEYS.TOKEN_KEY);
-    
-    axios.put(`https://tq-template-server-sample.herokuapp.com/users/${this.props.userId}`,
-    {
-      name: this.state.name,
-      email: this.state.email,
-      role: this.state.role
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      }
-    })
+
+    this.apiData.editUser(this.props.userId, this.state.name, this.state.email, this.state.role, token)
     .then(function (response: any){
       self.setState({edit: !self.state.edit});
       Alert.alert('Edição feita com sucesso!')

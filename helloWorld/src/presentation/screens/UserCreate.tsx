@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator} from "react-native";
 import { Navigation } from "react-native-navigation";
-import axios from 'axios';
 
 import UserInputText from "../components/UserInputText";
 import { styles } from "../styles";
@@ -10,6 +9,7 @@ import ValidatorName from "../../domain/ValidatorName";
 import ValidatorEmail from "../../domain/ValidatorEmail";
 import ValidatorPassword from "../../domain/ValidatorPassword";
 import { LocalData } from "../../data/LocalData";
+import { ApiData } from "../../data/ApiData";
 
 export default class UserCreate extends Component<{
   componentId: any,
@@ -26,6 +26,7 @@ export default class UserCreate extends Component<{
   private passwordInput: UserInputText | null = null;
 
   private localData: LocalData;
+  private apiData: ApiData;
 
   constructor(props: any) {
     super(props)
@@ -38,6 +39,7 @@ export default class UserCreate extends Component<{
       loading: false,
     }
     this.localData = new LocalData();
+    this.apiData = new ApiData();
   }
 
   render() {
@@ -175,19 +177,7 @@ export default class UserCreate extends Component<{
 
     const token = await this.localData.get(KEYS.TOKEN_KEY);
 
-    axios.post('https://tq-template-server-sample.herokuapp.com/users/', 
-      {
-        name: this.state.name,
-        password: this.state.password,
-        email: this.state.email,
-        role: this.state.role
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        }
-      })
+    this.apiData.creatUser(this.state.name, this.state.password, this.state.email, this.state.role, token)
     .then(function (response: any){
       self.activityIndicatorSuccess("Cadastro feito com sucesso.");
     })

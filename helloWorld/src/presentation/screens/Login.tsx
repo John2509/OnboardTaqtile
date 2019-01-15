@@ -8,7 +8,6 @@ import {
   Modal, 
   Switch
 } from 'react-native';
-import axios from 'axios';
 
 import { goHome } from '../../core/navigation'
 import { styles } from '../styles'
@@ -17,6 +16,7 @@ import UserInputText from '../components/UserInputText';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import ValidatorPassword from '../../domain/ValidatorPassword';
 import { LocalData } from '../../data/LocalData';
+import { ApiData } from '../../data/ApiData';
 
 export default class Login extends Component<{}, { 
   email: string, 
@@ -27,7 +27,9 @@ export default class Login extends Component<{}, {
 {
   private emailInput: UserInputText | null = null;
   private passwordInput: UserInputText | null = null;
+
   private localData: LocalData;
+  private apiData: ApiData;
 
   constructor(props: any) {
     super(props);
@@ -38,6 +40,7 @@ export default class Login extends Component<{}, {
       rememberMe: false,
     };
     this.localData = new LocalData();
+    this.apiData = new ApiData();
   }
 
   render() {
@@ -121,18 +124,14 @@ export default class Login extends Component<{}, {
 
   loginRequest = async () => {
     var self = this;
-    axios.post('https://tq-template-server-sample.herokuapp.com/authenticate/', {
-      password: this.state.password,
-      email: this.state.email,
-      rememberMe: this.state.rememberMe
-    })
+    this.apiData.login(this.state.email, this.state.password, this.state.rememberMe)
     .then(function (response: any){
       self.localData.set(KEYS.USER_KEY, response.data.data.user.name);
       self.localData.set(KEYS.TOKEN_KEY, response.data.data.token);
       self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + response.data.data.user.name);
       goHome();
     })
-    .catch(function (error){
+    .catch(function (error: any){
       if (error.response) {
         var totalError = '';
         error.response.data.errors.forEach(function (error: any) {

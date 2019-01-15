@@ -2,13 +2,13 @@ import React from 'react';
 import {
   View, FlatList, Alert, TouchableHighlight, Text
 } from 'react-native';
-import axios from 'axios';
 
 import UserListItem, { user } from '../components/UserListItem';
 import { KEYS } from '../../data/config';
 import { styles } from '../styles';
 import { Navigation } from 'react-native-navigation';
 import { LocalData } from '../../data/LocalData';
+import { ApiData } from '../../data/ApiData';
 
 export default class UserList extends React.Component<{
   componentId: any
@@ -18,6 +18,7 @@ export default class UserList extends React.Component<{
 }> {
 
   private localData: LocalData;
+  private apiData: ApiData;
 
   constructor(props: any) {
     super(props);
@@ -26,6 +27,7 @@ export default class UserList extends React.Component<{
       page: 0,
     };
     this.localData = new LocalData();
+    this.apiData = new ApiData();
   }
 
   componentDidMount() {
@@ -51,18 +53,8 @@ export default class UserList extends React.Component<{
     var self = this;
 
     const token = await this.localData.get(KEYS.TOKEN_KEY);
-    
-    axios.get('https://tq-template-server-sample.herokuapp.com/users', {
-      params: {
-        pagination: {
-          page: this.state.page,
-          window: 30
-        }
-      },
-      headers: {
-        Authorization: token,
-      }
-    })
+
+    this.apiData.getUserList(this.state.page, 30, token)
     .then(function (response: any){
       response.data.data.forEach((user: any) => {
         list.push({
