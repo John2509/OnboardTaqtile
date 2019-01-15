@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { goToAuth } from '../core/navigation';
-import { Alert, AsyncStorage } from 'react-native';
-import { USER_KEY, TOKEN_KEY } from './config';
+import { Alert } from 'react-native';
+import { KEYS } from './config';
 import { Navigation } from 'react-native-navigation';
+import { LocalData } from './LocalData';
 
 export function addInterceptor (){
   axios.interceptors.request.use(
@@ -19,8 +20,9 @@ export function addInterceptor (){
     }, 
     function (error) {
       if(error.response.data.errors[0].original == "Jwt token is expired"){
-        AsyncStorage.removeItem(USER_KEY);
-        AsyncStorage.removeItem(TOKEN_KEY);
+        var localData = new LocalData();
+        localData.remove(KEYS.USER_KEY);
+        localData.remove(KEYS.TOKEN_KEY);
         Navigation.dismissAllModals();
         goToAuth();
         Alert.alert("Por Favor, faça o login novamente");
