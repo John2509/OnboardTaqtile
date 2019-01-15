@@ -5,11 +5,11 @@ import {
 import axios from 'axios';
 import { Navigation } from 'react-native-navigation';
 
-import { styles } from '../scr/styles';
-import { TOKEN_KEY } from '../scr/config';
-import UserInputText from '../component/UserInputText';
-import { validateName, validateEmail } from '../scr/validator';
-import { user } from '../component/UserListItem';
+import { styles } from '../styles';
+import { TOKEN_KEY } from '../../data/config';
+import UserInputText from '../components/UserInputText';
+import { validateName, validateEmail } from '../../domain/validator';
+import { user } from '../components/UserListItem';
 
 export default class UserDetails extends React.Component<{
   userId: number,

@@ -3,10 +3,10 @@ import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator
 import { Navigation } from "react-native-navigation";
 import axios from 'axios';
 
-import UserInputText from "../component/UserInputText";
-import { styles } from "../scr/styles";
-import { validateEmail, validatePassword, validateName } from "../scr/validator";
-import { TOKEN_KEY } from "../scr/config";
+import UserInputText from "../components/UserInputText";
+import { styles } from "../styles";
+import { validateEmail, validatePassword, validateName } from "../../domain/validator";
+import { TOKEN_KEY } from "../../data/config";
 
 export default class UserCreate extends Component<{
   componentId: any,

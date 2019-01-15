@@ -1,7 +1,7 @@
 import React , { Component } from "react";
 import { View, Text, TextInput } from "react-native";
-import { styles } from "../scr/styles";
-import { validator } from "../scr/validator";
+import { styles } from "../styles";
+import { validator } from "../../domain/validator";
 
 export default class UserInputText extends Component<{
   title: string,

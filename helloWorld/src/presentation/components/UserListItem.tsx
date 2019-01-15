@@ -1,6 +1,6 @@
-import React, { Component, Props } from 'react';
+import React, { Component} from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
-import { styles } from '../scr/styles';
+import { styles } from '../styles';
 import { Navigation } from 'react-native-navigation';
 
 export interface user {

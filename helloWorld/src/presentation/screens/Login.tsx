@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-import { goHome } from '../scr/navigation'
-import { styles } from '../scr/styles'
-import { USER_KEY, TOKEN_KEY } from '../scr/config'
-import { validateEmail, validatePassword } from '../scr/validator';
-import UserInputText from '../component/UserInputText';
+import { goHome } from '../../core/navigation'
+import { styles } from '../styles'
+import { USER_KEY, TOKEN_KEY } from '../../data/config'
+import { validateEmail, validatePassword } from '../../domain/validator';
+import UserInputText from '../components/UserInputText';
 
 export default class Login extends Component<{}, { 
   email: string, 

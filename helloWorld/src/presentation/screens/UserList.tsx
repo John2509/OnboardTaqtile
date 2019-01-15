@@ -4,9 +4,9 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-import UserListItem, { user } from '../component/UserListItem';
-import { TOKEN_KEY } from '../scr/config';
-import { styles } from '../scr/styles';
+import UserListItem, { user } from '../components/UserListItem';
+import { TOKEN_KEY } from '../../data/config';
+import { styles } from '../styles';
 import { Navigation } from 'react-native-navigation';
 
 export default class UserList extends React.Component<{

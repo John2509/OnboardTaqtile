@@ -8,9 +8,9 @@ import {
 } from 'react-native'
 import { Navigation } from 'react-native-navigation';
 
-import { goToAuth } from '../scr/navigation';
-import { styles } from '../scr/styles';
-import { USER_KEY, TOKEN_KEY } from '../scr/config';
+import { goToAuth } from '../../core/navigation';
+import { styles } from '../styles';
+import { USER_KEY, TOKEN_KEY } from '../../data/config';
 
 export default class HomePage extends React.Component<{
   componentId: any,

@@ -5,9 +5,9 @@ import {
   AsyncStorage
 } from 'react-native'
 
-import { goToAuth, goHome } from '../scr/navigation'
-import { styles } from '../scr/styles'
-import { USER_KEY } from '../scr/config'
+import { goToAuth, goHome } from '../../core/navigation'
+import { styles } from '../styles'
+import { USER_KEY } from '../../data/config'
 
 interface Props {}
 export default class Initializing extends React.Component {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { goToAuth } from '../scr/navigation';
+import { goToAuth } from '../core/navigation';
 import { Alert, AsyncStorage } from 'react-native';
 import { USER_KEY, TOKEN_KEY } from './config';
 import { Navigation } from 'react-native-navigation';
