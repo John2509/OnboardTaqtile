@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { styles } from '../styles';
-import { showUserDetailsModal } from '../../core/navigation';
+import Navigation from '../../core/navigation';
 
 export interface user {
   username : string,
@@ -47,7 +47,7 @@ export default class UserListItem extends Component<{
             justifyContent:"center"
           }}
           onPress={() => {
-            showUserDetailsModal(this.props.user.item.id, (editedUser: user) => this.onChangeUser(editedUser));
+            Navigation.showModal('UserDetails', {userId: this.props.user.item.id, onChangeUser: (editedUser: user) => this.onChangeUser(editedUser)})
           }}>
           <Text style={{
             color: '#FFFFFF',

@@ -9,7 +9,7 @@ import {
   Switch
 } from 'react-native';
 
-import { goHome } from '../../core/navigation'
+import Navigation from '../../core/navigation'
 import { styles } from '../styles'
 import { KEYS } from '../../data/config'
 import UserInputText from '../components/UserInputText';
@@ -129,7 +129,7 @@ export default class Login extends Component<{}, {
       self.localData.set(KEYS.USER_KEY, response.data.data.user.name);
       self.localData.set(KEYS.TOKEN_KEY, response.data.data.token);
       self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + response.data.data.user.name);
-      goHome();
+      Navigation.goHome();
     })
     .catch(function (error: any){
       if (error.response) {

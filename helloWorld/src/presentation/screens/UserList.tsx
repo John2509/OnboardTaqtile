@@ -6,9 +6,9 @@ import {
 import UserListItem, { user } from '../components/UserListItem';
 import { KEYS } from '../../data/config';
 import { styles } from '../styles';
-import { Navigation } from 'react-native-navigation';
 import { LocalData } from '../../data/LocalData';
 import { ApiData } from '../../data/ApiData';
+import Navigation from '../../core/navigation';
 
 export default class UserList extends React.Component<{
   componentId: any
@@ -87,13 +87,7 @@ export default class UserList extends React.Component<{
         <View style={[styles.buttonConteiner, {width: '100%', marginBottom: 10, borderTopColor: '#BEC0BE', borderTopWidth: 2}]}>
           <TouchableHighlight
             style={styles.button}
-            onPress={() => {
-              Navigation.showModal({
-                component: {
-                  name: 'UserCreate',
-                }
-              });
-            }}>
+            onPress={() => { Navigation.showModal('UserCreate') }}>
             <Text style={styles.textButton}>Criar Usuário</Text>
           </TouchableHighlight>
         </View>

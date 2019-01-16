@@ -1,44 +1,44 @@
-import { Navigation } from 'react-native-navigation'
-import { user } from '../presentation/components/UserListItem';
+import { Navigation as Navi } from 'react-native-navigation'
 
-export const goToAuth = () => Navigation.setRoot({
-  root: {
-    component: {
-      name: 'Login',
+export default class Navigation {
+  public static goToAuth = () => Navi.setRoot({
+    root: {
+      component: {
+        name: 'Login',
+      },
     },
-  },
-});
+  });
 
-export const goHome = () => Navigation.setRoot({
-  root: {
-    stack: {
-      id: 'App',
-      children: [
-        {
-          component: {
-            name: 'HomePage',
+  public static goHome = () => Navi.setRoot({
+    root: {
+      stack: {
+        id: 'App',
+        children: [
+          {
+            component: {
+              name: 'HomePage',
+            }
           }
-        }
-    ],
+      ],
+      }
     }
-  }
-});
+  });
 
-export const dismissAllModals = () => Navigation.dismissAllModals();
+  public static pushScreen = (componentId: any, componentName: string) => Navi.push(
+    componentId, {
+    component: {
+      name: componentName,
+    }
+  });
 
-export const showUserDetailsModal = (userId: number, onChangeUser:(editedUser: user)=>void) => Navigation.showModal({
-  component: {
-    name: 'UserDetails',
-    passProps: {
-      userId: userId,
-      onChangeUser: (editedUser: user) => onChangeUser(editedUser),
-    },
-  }
-});
+  public static showModal = (componentName: string, props?:{}) => Navi.showModal({
+    component: {
+      name: componentName,
+      passProps: props,
+    }
+  });
 
-export const pushScreen = (componentId: any, componentName: string) => Navigation.push(
-  componentId, {
-  component: {
-    name: componentName,
-  }
-})
+  public static dismissModal = (componentId: any) => Navi.dismissModal(componentId);
+
+  public static dismissAllModals = () => Navi.dismissAllModals();
+};

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator} from "react-native";
-import { Navigation } from "react-native-navigation";
 
 import UserInputText from "../components/UserInputText";
 import { styles } from "../styles";
@@ -10,6 +9,7 @@ import ValidatorEmail from "../../domain/ValidatorEmail";
 import ValidatorPassword from "../../domain/ValidatorPassword";
 import { LocalData } from "../../data/LocalData";
 import { ApiData } from "../../data/ApiData";
+import Navigation from "../../core/navigation";
 
 export default class UserCreate extends Component<{
   componentId: any,
@@ -96,9 +96,7 @@ export default class UserCreate extends Component<{
           <View style={[styles.buttonConteiner, {width: '50%'}]}>
             <TouchableHighlight
               style={[styles.button, {backgroundColor:'#DDDDDD'}]}
-              onPress={() => {
-                Navigation.dismissModal(this.props.componentId)}
-              }
+              onPress={() => {Navigation.dismissModal(this.props.componentId)}}
               disabled={this.state.loading}>
               <Text style={[styles.textButton, {color: '#222222'}]}>Cancelar</Text>
             </TouchableHighlight>

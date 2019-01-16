@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { goToAuth, dismissAllModals } from '../core/navigation';
+import Navigation from '../core/navigation';
 import { Alert } from 'react-native';
 import { KEYS } from './config';
 import { LocalData } from './LocalData';
@@ -22,8 +22,8 @@ export function addInterceptor (){
         var localData = new LocalData();
         localData.remove(KEYS.USER_KEY);
         localData.remove(KEYS.TOKEN_KEY);
-        dismissAllModals();
-        goToAuth();
+        Navigation.dismissAllModals();
+        Navigation.goToAuth();
         Alert.alert("Por Favor, faça o login novamente");
       };
       return Promise.reject(error);

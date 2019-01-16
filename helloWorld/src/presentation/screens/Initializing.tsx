@@ -4,7 +4,7 @@ import {
   Text
 } from 'react-native'
 
-import { goToAuth, goHome } from '../../core/navigation'
+import Navigation from '../../core/navigation'
 import { styles } from '../styles'
 import { KEYS } from '../../data/config'
 import { LocalData } from '../../data/LocalData';
@@ -23,12 +23,12 @@ export default class Initializing extends React.Component {
     try {
       const user = await this.localData.get(KEYS.USER_KEY);
       if (user) {
-        goHome();
+        Navigation.goHome();
       } else {
-        goToAuth();
+        Navigation.goToAuth();
       }
     } catch (err) {
-      goToAuth();
+      Navigation.goToAuth();
     }
   }
 

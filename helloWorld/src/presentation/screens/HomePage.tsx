@@ -6,7 +6,7 @@ import {
   TouchableHighlight
 } from 'react-native'
 
-import { goToAuth, pushScreen } from '../../core/navigation';
+import Navigation from '../../core/navigation';
 import { styles } from '../styles';
 import { KEYS } from '../../data/config';
 import { LocalData } from '../../data/LocalData';
@@ -32,10 +32,10 @@ export default class HomePage extends React.Component<{
     try {
       await this.localData.remove(KEYS.USER_KEY);
       await this.localData.remove(KEYS.TOKEN_KEY);
-      goToAuth();
+      Navigation.goToAuth();
     } catch (err) {
       Alert.alert('Erro ao logout...: ', err);
-      goToAuth();
+      Navigation.goToAuth();
     }
   }
 
@@ -46,7 +46,7 @@ export default class HomePage extends React.Component<{
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight
-            onPress={ () => pushScreen(this.props.componentId, 'UserList')}
+            onPress={ () => Navigation.pushScreen(this.props.componentId, 'UserList')}
             style={styles.button}>
             <Text style={styles.textButton}>Lista de Usuários</Text>
           </TouchableHighlight>

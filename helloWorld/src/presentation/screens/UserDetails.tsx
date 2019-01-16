@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View, Alert, Text, TouchableHighlight, Picker
 } from 'react-native';
-import { Navigation } from 'react-native-navigation';
 
 import { styles } from '../styles';
 import { KEYS } from '../../data/config';
@@ -12,6 +11,7 @@ import ValidatorName from '../../domain/ValidatorName';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import { LocalData } from '../../data/LocalData';
 import { ApiData } from '../../data/ApiData';
+import Navigation from '../../core/navigation';
 
 export default class UserDetails extends React.Component<{
   userId: number,
