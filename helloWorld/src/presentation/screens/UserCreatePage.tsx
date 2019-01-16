@@ -49,16 +49,15 @@ export default class UserCreatePage extends Component<{
   };
 
   activityIndicatorEnd = (success: boolean, alertMessage: string, alertDetais?: string) => {
-    if (success){
-      this.userCreate.close(this.props.componentId);
-    }
     this.setState({ 
       loading: false, 
     },
-      () => setTimeout( () => {
-        Alert.alert(alertMessage, alertDetais)
-      }, 10)
-    );
+    () => setTimeout( () => {
+      Alert.alert(alertMessage, alertDetais)
+    }, 10));
+    if (success){
+      this.userCreate.close(this.props.componentId);
+    }
   };
 
   onSubmit = async () => {
