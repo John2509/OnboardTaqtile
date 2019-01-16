@@ -2,6 +2,7 @@ import { KEYS } from "../data/config";
 import { LocalData } from "../data/LocalData";
 import { ApiData } from "../data/ApiData";
 import Navigation from "../core/navigation";
+import { IUser } from "./IUser";
 
 export default class UserCreate {
   localData: LocalData;
@@ -13,19 +14,15 @@ export default class UserCreate {
   };
 
   close(componentId: any) {
-    Navigation.dismissModal(componentId);
+    Navigation.popScreen(componentId);
   };
 
-  closeAll() {
-    Navigation.dismissAllModals();
-  }
-
-  async createRequest(name: string, password: string, email: string, role: string): Promise<string> {
+  async createRequest(name: string, password: string, email: string, role: string): Promise<IUser | string> {
     const token = await this.localData.get(KEYS.TOKEN_KEY);
 
     try {
-      await this.apiData.creatUser(name, password, email, role, token);
-      return Promise.resolve("Cadastro com sucesso");
+      var user = await this.apiData.createUser(name, password, email, role, token);
+      return Promise.resolve(user);
     } catch (error) {
       if (error.response) {
         var totalError = '';

@@ -51,9 +51,17 @@ export default class HomePage extends React.Component<{
 
         <View style={[styles.buttonConteiner, {width: '100%'}]}>
           <TouchableHighlight
-            onPress={() => this.home.logout() }
+            onPress={ () => this.home.goUserCreate(this.props.componentId)}
             style={styles.button}>
-            <Text style={styles.textButton}>Logout</Text>
+            <Text style={styles.textButton}>Criar Usuário</Text>
+          </TouchableHighlight>
+        </View>
+
+        <View style={[styles.buttonConteiner, {width: '100%'}]}>
+          <TouchableHighlight
+            onPress={() => this.home.logout() }
+            style={[styles.button, {backgroundColor:'#DDDDDD'}]}>
+            <Text style={[styles.textButton, {color: '#222222'}]}>Logout</Text>
           </TouchableHighlight>
         </View>
 

@@ -31,6 +31,10 @@ export default class Navigation {
     }
   });
 
+  public static popScreen = (compontId: any) => Navi.pop(
+    compontId
+  );
+
   public static showModal = (componentName: string, props?:{}) => Navi.showModal({
     component: {
       name: componentName,

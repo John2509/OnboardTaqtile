@@ -47,7 +47,7 @@ export default class UserListPage extends React.Component<{
   async getData() {
     try {
       var list = await this.userList.getData(this.state.page, 30, this.state.listData);
-      if (list) {
+      if (!(typeof list === "string")) {
         this.setState({listData: list, page: this.state.page+1});
       }
       else throw new Error();
@@ -69,14 +69,6 @@ export default class UserListPage extends React.Component<{
           onEndReachedThreshold={0.5}
           keyExtractor= {(item: IUser) => item.id.toString()}
         />
-        
-        <View style={[styles.buttonConteiner, {width: '100%', marginBottom: 10, borderTopColor: '#BEC0BE', borderTopWidth: 2}]}>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={() => { this.userList.openUserCreate() }}>
-            <Text style={styles.textButton}>Criar Usuário</Text>
-          </TouchableHighlight>
-        </View>
       </View>
     );
   };

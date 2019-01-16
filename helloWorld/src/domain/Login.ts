@@ -2,6 +2,7 @@ import { ApiData } from "../data/ApiData";
 import { LocalData } from "../data/LocalData";
 import { KEYS } from "../data/config";
 import Navigation from "../core/navigation";
+import { IUser } from "./IUser";
 
 export default class Login {
   apiData: ApiData;
@@ -12,15 +13,15 @@ export default class Login {
     this.localData = new LocalData();
   }
 
-  async loginRequest(email: string, password: string, rememberMe: boolean): Promise<any> {
+  async loginRequest(email: string, password: string, rememberMe: boolean): Promise<IUser | string> {
     var self = this;
     
     try {
       var response = await this.apiData.login(email, password, rememberMe);
-      self.localData.set(KEYS.USER_KEY, response.data.data.user.name);
-      self.localData.set(KEYS.TOKEN_KEY, response.data.data.token);
+      self.localData.set(KEYS.USER_KEY, response.user.username);
+      self.localData.set(KEYS.TOKEN_KEY, response.token);
       Navigation.goHome();
-      return Promise.resolve(response.data.data.user.name);
+      return Promise.resolve(response.user);
     }
     catch (error) {
       if (error.response) {

@@ -37,22 +37,28 @@ export default class UserCreatePage extends Component<{
     this.userCreate = new UserCreate();
   };
 
+  static get options() {
+    return {
+      topBar: {
+        title: {
+          text: 'Criar Usuário'
+        },
+        drawBehind: true,
+      }
+    };
+  };
+
   activityIndicatorEnd = (success: boolean, alertMessage: string, alertDetais?: string) => {
     if (success){
-      this.userCreate.closeAll();
-    setTimeout( () => {
-      Alert.alert(alertMessage);
-      }, 600);
+      this.userCreate.close(this.props.componentId);
     }
-    else{
-      this.setState({ 
-        loading: false, 
-      },
-        () => setTimeout( () => {
-          Alert.alert(alertMessage, alertDetais)
-        }, 10)
-      );
-    }
+    this.setState({ 
+      loading: false, 
+    },
+      () => setTimeout( () => {
+        Alert.alert(alertMessage, alertDetais)
+      }, 10)
+    );
   };
 
   onSubmit = async () => {

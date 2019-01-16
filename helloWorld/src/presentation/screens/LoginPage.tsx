@@ -14,6 +14,7 @@ import CompInputText from '../components/CompInputText';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import ValidatorPassword from '../../domain/ValidatorPassword';
 import Login from '../../domain/Login';
+import { IUser } from '../../domain/IUser';
 
 export default class LoginPage extends Component<{}, { 
   email: string, 
@@ -68,8 +69,9 @@ export default class LoginPage extends Component<{}, {
     if (!error){
       this.setState({loading: true});
       try {
-        var username = await this.login.loginRequest(this.state.email, this.state.password, this.state.rememberMe);
-        self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + username);
+        var user = await this.login.loginRequest(this.state.email, this.state.password, this.state.rememberMe);
+        if (!(typeof user === "string"))
+          self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + user.username);
       } catch (error) {
         self.activityIndicatorEnd("Falha no login.", error);
       }

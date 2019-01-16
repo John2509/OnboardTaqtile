@@ -50,7 +50,7 @@ export default class UserDetailsPage extends React.Component<{
   async componentDidMount() {
     try {
       var user = await this.userDetails.getData(this.props.userId);
-      if (user){
+      if (!(typeof user === "string")){
         this.setState({
           email: user.email,
           name: user.username,
@@ -133,20 +133,23 @@ export default class UserDetailsPage extends React.Component<{
 
         { this.getRoleFormat() }
 
-        <View style={[styles.buttonConteiner, {width: '100%'}]}>
-          <TouchableHighlight 
-            onPress={() => this.editOrSave()}
-            style={styles.button}>
-            <Text style={styles.textButton}>{this.state.edit ? 'Salvar' : 'Editar'}</Text>
-          </TouchableHighlight>
-        </View>
+        <View style={styles.bottomConteiner}>
 
-        <View style={[styles.buttonConteiner, {width: '100%'}]}>
-          <TouchableHighlight 
-            onPress={() => {this.close()}}
-            style={styles.button}>
-            <Text style={styles.textButton}>Fechar</Text>
-          </TouchableHighlight>
+          <View style={[styles.buttonConteiner, {width: '50%'}]}>
+            <TouchableHighlight 
+              onPress={() => {this.close()}}
+              style={[styles.button, {backgroundColor:'#DDDDDD'}]}>
+              <Text style={[styles.textButton, {color: '#222222'}]}>Fechar</Text>
+            </TouchableHighlight>
+          </View>
+
+          <View style={[styles.buttonConteiner, {width: '50%'}]}>
+            <TouchableHighlight 
+              onPress={() => this.editOrSave()}
+              style={styles.button}>
+              <Text style={styles.textButton}>{this.state.edit ? 'Salvar' : 'Editar'}</Text>
+            </TouchableHighlight>
+          </View>
         </View>
 
       </View>

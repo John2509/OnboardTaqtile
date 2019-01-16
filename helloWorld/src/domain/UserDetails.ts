@@ -19,11 +19,11 @@ export default class UserDetails {
     Navigation.dismissModal(componentId);
   };
 
-  async sendEdit(userId: number, name: string, email: string, role: string) : Promise<String> {
+  async sendEdit(userId: number, name: string, email: string, role: string) : Promise<IUser | String> {
     try {
       const token = await this.localData.get(KEYS.TOKEN_KEY);
-      await this.apiData.editUser(userId, name, email, role, token);
-      return Promise.resolve("Edição feita com sucesso!")
+      var user = await this.apiData.editUser(userId, name, email, role, token);
+      return Promise.resolve(user)
     }
     catch (error) {
       if (error.response) {
@@ -39,19 +39,13 @@ export default class UserDetails {
     }
   };
 
-  async getData(userId: number) : Promise<IUser | void>{
+  async getData(userId: number) : Promise<IUser | string>{
     try {
       const token = await this.localData.get(KEYS.TOKEN_KEY);
-      var response = await this.apiData.getUser(userId, token);
-      var user = {
-        id: userId,
-        email: response.data.data.email,
-        username: response.data.data.name,
-        role: response.data.data.role
-      };
+      var user = await this.apiData.getUser(userId, token);
       return Promise.resolve(user);
     } catch (error) {
-      return Promise.reject();
+      return Promise.reject("Error");
     }
   }
 }

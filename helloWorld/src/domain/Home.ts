@@ -22,4 +22,8 @@ export default class Home {
   async goUserList(componentId: string): Promise<void> {
     Navigation.pushScreen(componentId, 'UserList')
   }
+
+  async goUserCreate(componentId: string): Promise<void> {
+    Navigation.pushScreen(componentId, 'UserCreate')
+  }
 }

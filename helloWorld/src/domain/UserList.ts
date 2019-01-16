@@ -26,21 +26,16 @@ export default class UserList {
     Navigation.showModal('UserDetails', {userId: userId, onChangeUser: (editedUser: IUser) => onChangeUser(editedUser)});
   }
 
-  async getData(page: number, window: number, list: Array<IUser>) : Promise<Array<IUser> | void> {
+  async getData(page: number, window: number, list: Array<IUser>) : Promise<IUser[] | string> {
     try {
       const token = await this.localData.get(KEYS.TOKEN_KEY);
-      var response = await this.apiData.getUserList(page, window, token);
-      response.data.data.forEach((user: any) => {
-        list.push({
-          username: user.name,
-          role: user.role,
-          id: user.id,
-          email: ""
-        });
+      var users = await this.apiData.getUserList(page, window, token);
+      users.forEach((user: IUser) => {
+        list.push(user);
       });
       return Promise.resolve(list);
     } catch (error) {
-      return Promise.reject();
+      return Promise.reject("Error");
     }
   }
 }
