@@ -12,21 +12,21 @@ import {
 import Navigation from '../../core/navigation'
 import { styles } from '../styles'
 import { KEYS } from '../../data/config'
-import UserInputText from '../components/UserInputText';
+import CompInputText from '../components/CompInputText';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import ValidatorPassword from '../../domain/ValidatorPassword';
 import { LocalData } from '../../data/LocalData';
 import { ApiData } from '../../data/ApiData';
 
-export default class Login extends Component<{}, { 
+export default class LoginPage extends Component<{}, { 
   email: string, 
   password: string, 
   loading: boolean,
   rememberMe: boolean,
 }> 
 {
-  private emailInput: UserInputText | null = null;
-  private passwordInput: UserInputText | null = null;
+  private emailInput: CompInputText | null = null;
+  private passwordInput: CompInputText | null = null;
 
   private localData: LocalData;
   private apiData: ApiData;
@@ -47,7 +47,7 @@ export default class Login extends Component<{}, {
     return (
       <View style={styles.conteiner}>
 
-        <UserInputText 
+        <CompInputText 
           title='E-mail'
           onChangeText={(email: string) => {
             this.setState({ email: email })}
@@ -60,7 +60,7 @@ export default class Login extends Component<{}, {
           validator={new ValidatorEmail()}
         />
 
-        <UserInputText 
+        <CompInputText 
           title='Senha'
           onChangeText={(password: string) => {
             this.setState({ password: password })}

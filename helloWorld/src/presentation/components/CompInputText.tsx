@@ -3,7 +3,7 @@ import { View, Text, TextInput } from "react-native";
 import { styles } from "../styles";
 import { IValidator } from "../../domain/IValidator";
 
-export default class UserInputText extends Component<{
+export default class CompInputText extends Component<{
   title: string,
   value: string,
   onChangeText: {(text: string): void},

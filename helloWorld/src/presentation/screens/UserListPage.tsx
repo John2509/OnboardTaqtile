@@ -3,14 +3,14 @@ import {
   View, FlatList, Alert, TouchableHighlight, Text
 } from 'react-native';
 
-import UserListItem, { user } from '../components/UserListItem';
+import CompListItem, { user } from '../components/CompListItem';
 import { KEYS } from '../../data/config';
 import { styles } from '../styles';
 import { LocalData } from '../../data/LocalData';
 import { ApiData } from '../../data/ApiData';
 import Navigation from '../../core/navigation';
 
-export default class UserList extends React.Component<{
+export default class UserListPage extends React.Component<{
   componentId: any
 },{
   listData: Array<user>,
@@ -35,7 +35,7 @@ export default class UserList extends React.Component<{
   }
 
   private renderItem(user: any) {
-    return <UserListItem 
+    return <CompListItem 
       user={user} 
       onChangeUser={(editedUser: user, index: number) => this.onChangeUser(editedUser, index)}/>
   }

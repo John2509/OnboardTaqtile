@@ -1,16 +1,16 @@
 import { Navigation } from 'react-native-navigation';
-import Login from '../presentation/screens/Login';
+import LoginPage from '../presentation/screens/LoginPage';
 import HomePage from '../presentation/screens/HomePage';
-import Initializing from '../presentation/screens/Initializing';
-import UserList from '../presentation/screens/UserList';
-import UserDetails from '../presentation/screens/UserDetails';
-import UserCreate from '../presentation/screens/UserCreate';
+import InitializingPage from '../presentation/screens/InitializingPage';
+import UserListPage from '../presentation/screens/UserListPage';
+import UserDetailsPage from '../presentation/screens/UserDetailsPage';
+import UserCreatePage from '../presentation/screens/UserCreatePage';
 
 export function registerScreens() {
-  Navigation.registerComponent('Login', () => Login);
+  Navigation.registerComponent('Login', () => LoginPage);
   Navigation.registerComponent('HomePage', () => HomePage);
-  Navigation.registerComponent('Initializing', () => Initializing);
-  Navigation.registerComponent('UserList', () => UserList);
-  Navigation.registerComponent('UserDetails', () => UserDetails);
-  Navigation.registerComponent('UserCreate',  () => UserCreate);
+  Navigation.registerComponent('Initializing', () => InitializingPage);
+  Navigation.registerComponent('UserList', () => UserListPage);
+  Navigation.registerComponent('UserDetails', () => UserDetailsPage);
+  Navigation.registerComponent('UserCreate',  () => UserCreatePage);
 }

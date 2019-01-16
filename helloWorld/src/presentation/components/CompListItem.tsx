@@ -9,7 +9,7 @@ export interface user {
   id : number
 }
 
-export default class UserListItem extends Component<{
+export default class CompListItem extends Component<{
   user: {
     item: user,
     index: number

@@ -5,15 +5,15 @@ import {
 
 import { styles } from '../styles';
 import { KEYS } from '../../data/config';
-import UserInputText from '../components/UserInputText';
-import { user } from '../components/UserListItem';
+import CompInputText from '../components/CompInputText';
+import { user } from '../components/CompListItem';
 import ValidatorName from '../../domain/ValidatorName';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import { LocalData } from '../../data/LocalData';
 import { ApiData } from '../../data/ApiData';
 import Navigation from '../../core/navigation';
 
-export default class UserDetails extends React.Component<{
+export default class UserDetailsPage extends React.Component<{
   userId: number,
   onChangeUser: {(editedUser: user): void}
   componentId: any
@@ -24,8 +24,8 @@ export default class UserDetails extends React.Component<{
   edit: boolean,
 }> {
 
-  private nameInput: UserInputText | null = null;
-  private emailInput: UserInputText | null = null;
+  private nameInput: CompInputText | null = null;
+  private emailInput: CompInputText | null = null;
 
   private localData: LocalData;
   private apiData: ApiData;
@@ -69,7 +69,7 @@ export default class UserDetails extends React.Component<{
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
 
-        <UserInputText
+        <CompInputText
           title="Nome" 
           value={this.state.name} 
           editable={this.state.edit}
@@ -79,7 +79,7 @@ export default class UserDetails extends React.Component<{
           onSubmitEditing={() => { if (this.emailInput) this.emailInput.focus()}}
           />
           
-        <UserInputText 
+        <CompInputText 
           title="E-mail" 
           value={this.state.email} 
           editable={this.state.edit}
@@ -185,7 +185,7 @@ export default class UserDetails extends React.Component<{
     }
     else {
       return (
-        <UserInputText 
+        <CompInputText 
           title="Função" 
           value={this.state.role} 
           editable={this.state.edit}

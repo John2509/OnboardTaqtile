@@ -9,8 +9,7 @@ import { styles } from '../styles'
 import { KEYS } from '../../data/config'
 import { LocalData } from '../../data/LocalData';
 
-interface Props {}
-export default class Initializing extends React.Component {
+export default class InitializingPage extends React.Component {
 
   private localData: LocalData;
 

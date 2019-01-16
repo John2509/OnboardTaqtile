@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator} from "react-native";
 
-import UserInputText from "../components/UserInputText";
+import CompInputText from "../components/CompInputText";
 import { styles } from "../styles";
 import { KEYS } from "../../data/config";
 import ValidatorName from "../../domain/ValidatorName";
@@ -11,7 +11,7 @@ import { LocalData } from "../../data/LocalData";
 import { ApiData } from "../../data/ApiData";
 import Navigation from "../../core/navigation";
 
-export default class UserCreate extends Component<{
+export default class UserCreatePage extends Component<{
   componentId: any,
 },{
   name: string,
@@ -21,9 +21,9 @@ export default class UserCreate extends Component<{
 
   loading: boolean,
 }>{
-  private nameInput: UserInputText | null = null;
-  private emailInput: UserInputText | null = null;
-  private passwordInput: UserInputText | null = null;
+  private nameInput: CompInputText | null = null;
+  private emailInput: CompInputText | null = null;
+  private passwordInput: CompInputText | null = null;
 
   private localData: LocalData;
   private apiData: ApiData;
@@ -46,7 +46,7 @@ export default class UserCreate extends Component<{
     return (
       <View style={styles.conteiner}>
 
-        <UserInputText 
+        <CompInputText 
           title='Nome'
           onChangeText={(name: string) => {
             this.setState({ name: name})
@@ -57,7 +57,7 @@ export default class UserCreate extends Component<{
           value={this.state.name}
           validator={new ValidatorName()}/>
 
-        <UserInputText title='E-mail'
+        <CompInputText title='E-mail'
           onChangeText={(email: string) => {
             this.setState({ email: email})
           }}
@@ -68,7 +68,7 @@ export default class UserCreate extends Component<{
           value={this.state.email}
           validator={new ValidatorEmail()}/>
 
-        <UserInputText title='Senha'
+        <CompInputText title='Senha'
           onChangeText={(password: string) => {
             this.setState({ password: password})
           }}
