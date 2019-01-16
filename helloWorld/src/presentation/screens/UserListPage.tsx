@@ -3,22 +3,19 @@ import {
   View, FlatList, Alert, TouchableHighlight, Text
 } from 'react-native';
 
-import CompListItem, { user } from '../components/CompListItem';
-import { KEYS } from '../../data/config';
+import CompListItem from '../components/CompListItem';
 import { styles } from '../styles';
-import { LocalData } from '../../data/LocalData';
-import { ApiData } from '../../data/ApiData';
-import Navigation from '../../core/navigation';
+import { IUser } from '../../domain/IUser';
+import UserList from '../../domain/UserList';
 
 export default class UserListPage extends React.Component<{
   componentId: any
 },{
-  listData: Array<user>,
+  listData: Array<IUser>,
   page: number,
 }> {
 
-  private localData: LocalData;
-  private apiData: ApiData;
+  private userList: UserList;
 
   constructor(props: any) {
     super(props);
@@ -26,50 +23,39 @@ export default class UserListPage extends React.Component<{
       listData: [],
       page: 0,
     };
-    this.localData = new LocalData();
-    this.apiData = new ApiData();
+    this.userList = new UserList();
+  }
+
+  static get options() {
+    return {
+      topBar: {
+        title: {
+          text: 'Lista de Usuários'
+        },
+      }
+    };
+  };
+  
+  private onChangeUser(editedUser: IUser, index: number){
+    this.setState({listData: this.userList.onChangeUser(this.state.listData, editedUser, index)});
   }
 
   componentDidMount() {
     this.getData();
   }
 
-  private renderItem(user: any) {
-    return <CompListItem 
-      user={user} 
-      onChangeUser={(editedUser: user, index: number) => this.onChangeUser(editedUser, index)}/>
-  }
-
-  private onChangeUser(editedUser: user, index: number){
-    var list = this.state.listData;
-    list[index] = editedUser;
-    this.setState({listData: list});
-  }
-
   async getData() {
-
-    var list = this.state.listData;
-    var page = this.state.page;
-    var self = this;
-
-    const token = await this.localData.get(KEYS.TOKEN_KEY);
-
-    this.apiData.getUserList(this.state.page, 30, token)
-    .then(function (response: any){
-      response.data.data.forEach((user: any) => {
-        list.push({
-          username: user.name,
-          role: user.role,
-          id: user.id
-        });
-      });
-      self.setState({listData: list, page: page+1});
-    })
-    .catch(function (error){
-      console.log(error);
+    try {
+      var list = await this.userList.getData(this.state.page, 30, this.state.listData);
+      if (list) {
+        this.setState({listData: list, page: this.state.page+1});
+      }
+      else throw new Error();
+    }
+    catch {
       Alert.alert('Um erro ocorreu ao buscar usuários');
-    });
-  }
+    }
+  };
 
   render() {
     return (
@@ -81,13 +67,13 @@ export default class UserListPage extends React.Component<{
           style={{flex:1}}
           onEndReached={() => {this.getData()}}
           onEndReachedThreshold={0.5}
-          keyExtractor= {(item: user) => item.id.toString()}
+          keyExtractor= {(item: IUser) => item.id.toString()}
         />
         
         <View style={[styles.buttonConteiner, {width: '100%', marginBottom: 10, borderTopColor: '#BEC0BE', borderTopWidth: 2}]}>
           <TouchableHighlight
             style={styles.button}
-            onPress={() => { Navigation.showModal('UserCreate') }}>
+            onPress={() => { this.userList.openUserCreate() }}>
             <Text style={styles.textButton}>Criar Usuário</Text>
           </TouchableHighlight>
         </View>
@@ -95,15 +81,12 @@ export default class UserListPage extends React.Component<{
     );
   };
 
-  static get options() {
-    return {
-      topBar: {
-        title: {
-          text: 'Lista de Usuários'
-        },
-      }
-    };
-  };
+  renderItem(user: any) {
+    return <CompListItem 
+      user={user} 
+      onChangeUser={(editedUser: IUser, index: number) => this.onChangeUser(editedUser, index)}
+      openDetais={this.userList.openUserDetails}/>
+  }
 
   renderSeparator = () => {
     return (

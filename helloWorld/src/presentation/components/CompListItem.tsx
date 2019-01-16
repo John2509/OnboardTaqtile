@@ -1,62 +1,34 @@
 import React, { Component} from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { styles } from '../styles';
-import Navigation from '../../core/navigation';
-
-export interface user {
-  username : string,
-  role : string,
-  id : number
-}
+import { IUser } from '../../domain/IUser';
 
 export default class CompListItem extends Component<{
   user: {
-    item: user,
+    item: IUser,
     index: number
   },
-  onChangeUser: {(editedUser: user, index: number): void}
+  onChangeUser: {(editedUser: IUser, index: number): void},
+  openDetais: {(userId: number, onChangeUser: {(editedUser: IUser): void}): void}
 }, {}> {
 
-  private onChangeUser(editedUser: user){
+  private onChangeUser(editedUser: IUser){
     this.props.onChangeUser(editedUser, this.props.user.index);
   }
 
   render() {
     return (
-      <View style={{
-        flexDirection: "row",
-      }}>
+      <View style={{ flexDirection: "row" }}>
 
-        <View style={{
-          flex: 2,
-          marginHorizontal: 15,
-        }}>
+        <View style={{ flex: 2, marginHorizontal: 15 }}>
           <Text style={[styles.text, {fontWeight: 'bold'}]}>{this.props.user.item.username}</Text>
-          <Text style={{fontSize: 16, marginHorizontal: 25, color: '#303030', margin: 5}}>Função: {this.props.user.item.role}</Text>
+          <Text style={styles.textSmall}>Função: {this.props.user.item.role}</Text>
         </View>
 
         <TouchableHighlight 
-          style={{
-            height: 80,
-            margin: 15,
-            alignSelf: "center",
-            aspectRatio: 1,
-            padding: 10,
-            backgroundColor: '#660066',
-            borderRadius:80,
-            justifyContent:"center"
-          }}
-          onPress={() => {
-            Navigation.showModal('UserDetails', {userId: this.props.user.item.id, onChangeUser: (editedUser: user) => this.onChangeUser(editedUser)})
-          }}>
-          <Text style={{
-            color: '#FFFFFF',
-            fontSize:40,
-            fontWeight:"bold",
-            textAlign: "center",
-            textAlignVertical: "center",
-            alignSelf:"center",
-          }}>→</Text>
+          style={styles.buttonCircular}
+          onPress={() => { this.props.openDetais(this.props.user.item.id, (editedUser: IUser) => this.onChangeUser(editedUser))}}>
+          <Text style={styles.textButtonCircular}>→</Text>
         </TouchableHighlight>
 
       </View>

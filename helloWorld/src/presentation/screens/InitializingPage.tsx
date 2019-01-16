@@ -4,31 +4,20 @@ import {
   Text
 } from 'react-native'
 
-import Navigation from '../../core/navigation'
 import { styles } from '../styles'
-import { KEYS } from '../../data/config'
-import { LocalData } from '../../data/LocalData';
+import Initializing from '../../domain/Initializing';
 
 export default class InitializingPage extends React.Component {
 
-  private localData: LocalData;
+  private initializing: Initializing;
 
   constructor(props: any){
     super(props);
-    this.localData = new LocalData();
+    this.initializing = new Initializing();
   }
 
   async componentDidMount() {
-    try {
-      const user = await this.localData.get(KEYS.USER_KEY);
-      if (user) {
-        Navigation.goHome();
-      } else {
-        Navigation.goToAuth();
-      }
-    } catch (err) {
-      Navigation.goToAuth();
-    }
+    this.initializing.load();
   }
 
   render() {

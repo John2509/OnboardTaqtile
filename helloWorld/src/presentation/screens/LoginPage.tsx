@@ -9,14 +9,11 @@ import {
   Switch
 } from 'react-native';
 
-import Navigation from '../../core/navigation'
 import { styles } from '../styles'
-import { KEYS } from '../../data/config'
 import CompInputText from '../components/CompInputText';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import ValidatorPassword from '../../domain/ValidatorPassword';
-import { LocalData } from '../../data/LocalData';
-import { ApiData } from '../../data/ApiData';
+import Login from '../../domain/Login';
 
 export default class LoginPage extends Component<{}, { 
   email: string, 
@@ -28,8 +25,7 @@ export default class LoginPage extends Component<{}, {
   private emailInput: CompInputText | null = null;
   private passwordInput: CompInputText | null = null;
 
-  private localData: LocalData;
-  private apiData: ApiData;
+  private login: Login;
 
   constructor(props: any) {
     super(props);
@@ -39,9 +35,46 @@ export default class LoginPage extends Component<{}, {
       loading: false,
       rememberMe: false,
     };
-    this.localData = new LocalData();
-    this.apiData = new ApiData();
+    this.login = new Login();
   }
+
+  activityIndicatorEnd = (alertMessage: string, alertDetais?: string) => {
+    this.setState({ 
+      loading: false, 
+      email : '', 
+      password : ''
+    },
+      () => setTimeout( () => {
+        Alert.alert(alertMessage, alertDetais)
+      }, 10)
+    );
+  };
+
+  onSubmit = async () => {
+    var error = false;
+    var isFocus = false; 
+    var self = this;
+
+    if (this.emailInput && !this.emailInput.isValid()){
+      if (!isFocus) {this.emailInput.focus(); isFocus = true};
+      error = true;
+    }
+
+    if (this.passwordInput && !this.passwordInput.isValid(4)){
+      if (!isFocus) {this.passwordInput.focus(); isFocus = true};
+      error = true;
+    }
+
+    if (!error){
+      this.setState({loading: true});
+      try {
+        var username = await this.login.loginRequest(this.state.email, this.state.password, this.state.rememberMe);
+        self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + username);
+      } catch (error) {
+        self.activityIndicatorEnd("Falha no login.", error);
+      }
+    }
+  };
 
   render() {
     return (
@@ -108,60 +141,5 @@ export default class LoginPage extends Component<{}, {
 
       </View>
     );
-  }
-
-  activityIndicatorEnd = (alertMessage: string, alertDetais?: string) => {
-    this.setState({ 
-      loading: false, 
-      email : '', 
-      password : ''
-    },
-      () => setTimeout( () => {
-        Alert.alert(alertMessage, alertDetais)
-      }, 10)
-    );
-  }
-
-  loginRequest = async () => {
-    var self = this;
-    this.apiData.login(this.state.email, this.state.password, this.state.rememberMe)
-    .then(function (response: any){
-      self.localData.set(KEYS.USER_KEY, response.data.data.user.name);
-      self.localData.set(KEYS.TOKEN_KEY, response.data.data.token);
-      self.activityIndicatorEnd("Login feito com sucesso.", "Seja bem-vindo " + response.data.data.user.name);
-      Navigation.goHome();
-    })
-    .catch(function (error: any){
-      if (error.response) {
-        var totalError = '';
-        error.response.data.errors.forEach(function (error: any) {
-          totalError += error.message + '\n';
-        });
-        self.activityIndicatorEnd("Falha no login.", totalError);
-      }
-      else {
-        self.activityIndicatorEnd("Erro no login.");
-      }
-    });
-  }
-
-  onSubmit = () => {
-    var error = false;
-    var isFocus = false; 
-
-    if (this.emailInput && !this.emailInput.isValid()){
-      if (!isFocus) {this.emailInput.focus(); isFocus = true};
-      error = true;
-    }
-
-    if (this.passwordInput && !this.passwordInput.isValid(4)){
-      if (!isFocus) {this.passwordInput.focus(); isFocus = true};
-      error = true;
-    }
-
-    if (!error){
-      this.setState({loading: true});
-      this.loginRequest();
-    }
-  }
-};
+  };
+}

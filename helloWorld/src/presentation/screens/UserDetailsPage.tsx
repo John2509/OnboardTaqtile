@@ -4,18 +4,15 @@ import {
 } from 'react-native';
 
 import { styles } from '../styles';
-import { KEYS } from '../../data/config';
 import CompInputText from '../components/CompInputText';
-import { user } from '../components/CompListItem';
 import ValidatorName from '../../domain/ValidatorName';
 import ValidatorEmail from '../../domain/ValidatorEmail';
-import { LocalData } from '../../data/LocalData';
-import { ApiData } from '../../data/ApiData';
-import Navigation from '../../core/navigation';
+import UserDetails from '../../domain/UserDetails';
+import { IUser } from '../../domain/IUser';
 
 export default class UserDetailsPage extends React.Component<{
   userId: number,
-  onChangeUser: {(editedUser: user): void}
+  onChangeUser: {(editedUser: IUser): void}
   componentId: any
 },{
   email: string,
@@ -27,8 +24,7 @@ export default class UserDetailsPage extends React.Component<{
   private nameInput: CompInputText | null = null;
   private emailInput: CompInputText | null = null;
 
-  private localData: LocalData;
-  private apiData: ApiData;
+  private userDetails: UserDetails;
 
   constructor(props: any) {
     super(props);
@@ -38,32 +34,77 @@ export default class UserDetailsPage extends React.Component<{
       role: "",
       edit: false,
     };
-    this.localData = new LocalData();
-    this.apiData = new ApiData();
-  }
+    this.userDetails = new UserDetails();
+  };
 
-  componentDidMount() {
-    this.getData();
-  }
+  static get options() {
+    return {
+      topBar: {
+        title: {
+          text: 'Detalhes do Usuários'
+        },
+      }
+    };
+  };
 
-  async getData() {
-    var self = this;
-
-    const token = await this.localData.get(KEYS.TOKEN_KEY);
-
-    this.apiData.getUser(this.props.userId, token)
-    .then(function (response: any){
-      self.setState({
-        email: response.data.data.email,
-        name: response.data.data.name,
-        role: response.data.data.role
-      })
-    })
-    .catch(function (error: any){
-      console.log(error);
+  async componentDidMount() {
+    try {
+      var user = await this.userDetails.getData(this.props.userId);
+      if (user){
+        this.setState({
+          email: user.email,
+          name: user.username,
+          role: user.role
+        })
+      }
+      else throw new Error();
+    }
+    catch{
       Alert.alert('Um erro ocorreu ao buscar os detalhes do usuário');
-    });
+      this.userDetails.close(this.props.componentId);
+    }
+  };
+
+  async editOrSave() {
+    if (!this.state.edit){
+      this.setState({edit: !this.state.edit});
+    }
+    else {
+      var error = false;
+      var isFocus = false; 
+
+      if (this.nameInput && !this.nameInput.isValid()){
+        if (!isFocus) {this.nameInput.focus(); isFocus = true};
+        error = true;
+      }
+  
+      if (this.emailInput && !this.emailInput.isValid()){
+        if (!isFocus) {this.emailInput.focus(); isFocus = true};
+        error = true;
+      }
+
+      if (!error){
+        try {
+          await this.userDetails.sendEdit(this.props.userId, this.state.name, this.state.email, this.state.role);
+          this.setState({edit: !this.state.edit});
+          Alert.alert('Edição feita com sucesso!')
+        }
+        catch (error){
+          Alert.alert("Falha ao editar.", error);
+        }
+      }
+    }
   }
+
+  private close() {
+    var editedUser: IUser = {
+      id: this.props.userId,
+      username: this.state.name,
+      role: this.state.role,
+      email: this.state.email
+    };
+    this.userDetails.close(this.props.componentId, editedUser, this.props.onChangeUser);
+  };
 
   render() {
     return (
@@ -112,61 +153,6 @@ export default class UserDetailsPage extends React.Component<{
     );
   };
 
-  private close() {
-    var editedUser: user = {
-      id: this.props.userId,
-      username: this.state.name,
-      role: this.state.role
-    };
-    this.props.onChangeUser(editedUser);
-    Navigation.dismissModal(this.props.componentId);
-  }
-
-  async editOrSave() {
-    if (!this.state.edit){
-      this.setState({edit: !this.state.edit});
-    }
-    else {
-      var error = false;
-      var isFocus = false; 
-
-      if (this.nameInput && !this.nameInput.isValid()){
-        if (!isFocus) {this.nameInput.focus(); isFocus = true};
-        error = true;
-      }
-  
-      if (this.emailInput && !this.emailInput.isValid()){
-        if (!isFocus) {this.emailInput.focus(); isFocus = true};
-        error = true;
-      }
-
-      if (!error){
-        this.sendEdit();
-      }
-    }
-  }
-
-
-  async sendEdit() {
-    var self = this;
-    const token = await this.localData.get(KEYS.TOKEN_KEY);
-
-    this.apiData.editUser(this.props.userId, this.state.name, this.state.email, this.state.role, token)
-    .then(function (response: any){
-      self.setState({edit: !self.state.edit});
-      Alert.alert('Edição feita com sucesso!')
-    })
-    .catch(function (error){
-      if (error.response) {
-        var totalError = '';
-        error.response.data.errors.forEach(function (error: any) {
-          totalError += error.message + '\n';
-        });
-        Alert.alert("Falha ao editar.", totalError);
-      }
-    });
-  }
-  
   getRoleFormat() {
     if (this.state.edit){
       return (
@@ -192,15 +178,5 @@ export default class UserDetailsPage extends React.Component<{
           onChangeText={(role: string) => this.setState({role: role})}/>
       )
     }
-  }
-
-  static get options() {
-    return {
-      topBar: {
-        title: {
-          text: 'Detalhes do Usuários'
-        },
-      }
-    };
   };
 }

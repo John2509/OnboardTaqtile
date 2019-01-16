@@ -3,13 +3,10 @@ import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator
 
 import CompInputText from "../components/CompInputText";
 import { styles } from "../styles";
-import { KEYS } from "../../data/config";
 import ValidatorName from "../../domain/ValidatorName";
 import ValidatorEmail from "../../domain/ValidatorEmail";
 import ValidatorPassword from "../../domain/ValidatorPassword";
-import { LocalData } from "../../data/LocalData";
-import { ApiData } from "../../data/ApiData";
-import Navigation from "../../core/navigation";
+import UserCreate from "../../domain/UserCreate";
 
 export default class UserCreatePage extends Component<{
   componentId: any,
@@ -25,11 +22,10 @@ export default class UserCreatePage extends Component<{
   private emailInput: CompInputText | null = null;
   private passwordInput: CompInputText | null = null;
 
-  private localData: LocalData;
-  private apiData: ApiData;
+  private userCreate: UserCreate;
 
   constructor(props: any) {
-    super(props)
+    super(props);
     this.state = {
       name: '',
       email: '',
@@ -37,10 +33,59 @@ export default class UserCreatePage extends Component<{
       role: 'user',
 
       loading: false,
+    };
+    this.userCreate = new UserCreate();
+  };
+
+  activityIndicatorEnd = (success: boolean, alertMessage: string, alertDetais?: string) => {
+    if (success){
+      this.userCreate.closeAll();
+    setTimeout( () => {
+      Alert.alert(alertMessage);
+      }, 600);
     }
-    this.localData = new LocalData();
-    this.apiData = new ApiData();
-  }
+    else{
+      this.setState({ 
+        loading: false, 
+      },
+        () => setTimeout( () => {
+          Alert.alert(alertMessage, alertDetais)
+        }, 10)
+      );
+    }
+  };
+
+  onSubmit = async () => {
+    var error = false;
+    var isFocus = false; 
+    var self = this;
+
+    if (this.nameInput && !this.nameInput.isValid()){
+      if (!isFocus) {this.nameInput.focus(); isFocus = true};
+      error = true;
+    }
+
+    if (this.emailInput && !this.emailInput.isValid()){
+      if (!isFocus) {this.emailInput.focus(); isFocus = true};
+      error = true;
+    }
+
+    if (this.passwordInput && !this.passwordInput.isValid()){
+      if (!isFocus) {this.passwordInput.focus(); isFocus = true};
+      error = true;
+    }
+
+    if (!error){
+      this.setState({loading: true});
+      try {
+        await this.userCreate.createRequest(this.state.name, this.state.password, this.state.email, this.state.role);
+        self.activityIndicatorEnd( true , "Cadastro feito com sucesso.");
+      }
+      catch (error) {
+        self.activityIndicatorEnd( false , "Falha no Cadastro.", error);
+      }
+    }
+  };
 
   render() {
     return (
@@ -96,7 +141,7 @@ export default class UserCreatePage extends Component<{
           <View style={[styles.buttonConteiner, {width: '50%'}]}>
             <TouchableHighlight
               style={[styles.button, {backgroundColor:'#DDDDDD'}]}
-              onPress={() => {Navigation.dismissModal(this.props.componentId)}}
+              onPress={() => {this.userCreate.close(this.props.componentId)}}
               disabled={this.state.loading}>
               <Text style={[styles.textButton, {color: '#222222'}]}>Cancelar</Text>
             </TouchableHighlight>
@@ -126,70 +171,5 @@ export default class UserCreatePage extends Component<{
         </Modal>
       </View>
     );
-  }
-
-  onSubmit = () => {
-    var error = false;
-    var isFocus = false; 
-
-    if (this.nameInput && !this.nameInput.isValid()){
-      if (!isFocus) {this.nameInput.focus(); isFocus = true};
-      error = true;
-    }
-
-    if (this.emailInput && !this.emailInput.isValid()){
-      if (!isFocus) {this.emailInput.focus(); isFocus = true};
-      error = true;
-    }
-
-    if ( this.passwordInput && !this.passwordInput.isValid()){
-      if (!isFocus) {this.passwordInput.focus(); isFocus = true};
-      error = true;
-    }
-
-    if (!error){
-      this.setState({loading: true});
-      this.createRequest();
-    }
-  }
-
-  activityIndicatorEnd = (alertMessage: string, alertDetais?: string) => {
-    this.setState({ 
-      loading: false, 
-    },
-      () => setTimeout( () => {
-        Alert.alert(alertMessage, alertDetais)
-      }, 10)
-    );
-  }
-
-  activityIndicatorSuccess = (alertMessage: string) => {
-    Navigation.dismissAllModals();
-    setTimeout( () => {
-      Alert.alert(alertMessage);
-      }, 600);
-  }
-
-  async createRequest() {
-    var self = this;
-
-    const token = await this.localData.get(KEYS.TOKEN_KEY);
-
-    this.apiData.creatUser(this.state.name, this.state.password, this.state.email, this.state.role, token)
-    .then(function (response: any){
-      self.activityIndicatorSuccess("Cadastro feito com sucesso.");
-    })
-    .catch(function (error){
-      if (error.response) {
-        var totalError = '';
-        error.response.data.errors.forEach(function (error: any) {
-          totalError += error.message + '\n';
-        });
-        self.activityIndicatorEnd("Falha no login.", totalError);
-      }
-      else {
-        self.activityIndicatorEnd("Erro no login.");
-      }
-    });
-  }
+  };
 }

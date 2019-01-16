@@ -7,6 +7,12 @@ export const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#000000'
   },
+  textSmall: {
+    fontSize: 16, 
+    marginHorizontal: 25, 
+    color: '#303030', 
+    margin: 5
+  },
   textWelcome: {
     fontSize: 28,
     color: '#803080'
@@ -23,6 +29,14 @@ export const styles = StyleSheet.create({
     margin: 10,
     color: '#FFFFFF', 
     textAlign: 'center'
+  },
+  textButtonCircular: {
+    color: '#FFFFFF',
+    fontSize:40,
+    fontWeight:"bold",
+    textAlign: "center",
+    textAlignVertical: "center",
+    alignSelf:"center",
   },
   textError: {
     fontSize: 10,
@@ -61,6 +75,16 @@ export const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#660066',
     borderRadius:25,
+  },
+  buttonCircular: {
+    height: 80,
+    margin: 15,
+    alignSelf: "center",
+    aspectRatio: 1,
+    padding: 10,
+    backgroundColor: '#660066',
+    borderRadius:80,
+    justifyContent:"center"
   },
   modalBackground: {
     flex: 1,
