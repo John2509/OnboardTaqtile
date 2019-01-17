@@ -14,7 +14,6 @@ import CompInputText from '../components/CompInputText';
 import ValidatorEmail from '../../domain/ValidatorEmail';
 import ValidatorPassword from '../../domain/ValidatorPassword';
 import Login from '../../domain/Login';
-import { IUser } from '../../domain/IUser';
 
 export default class LoginPage extends Component<{}, { 
   email: string, 

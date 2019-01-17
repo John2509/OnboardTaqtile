@@ -3,7 +3,6 @@ import { KEYS } from "../data/config";
 import { LocalData } from "../data/LocalData";
 import { ApiData } from "../data/ApiData";
 import { IUser } from "./IUser";
-import { string } from "prop-types";
 
 export default class UserDetails {
   localData: LocalData;

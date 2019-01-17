@@ -1,10 +1,9 @@
 import React from 'react';
 import {
-  View, FlatList, Alert, TouchableHighlight, Text
+  View, FlatList, Alert
 } from 'react-native';
 
 import CompListItem from '../components/CompListItem';
-import { styles } from '../styles';
 import { IUser } from '../../domain/IUser';
 import UserList from '../../domain/UserList';
 
