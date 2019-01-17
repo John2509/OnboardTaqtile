@@ -97,13 +97,7 @@ export default class UserDetailsPage extends React.Component<{
   }
 
   private close() {
-    var editedUser: IUser = {
-      id: this.props.userId,
-      username: this.state.name,
-      role: this.state.role,
-      email: this.state.email
-    };
-    this.userDetails.close(this.props.componentId, editedUser, this.props.onChangeUser);
+    this.userDetails.close(this.props.componentId, this.props.userId, this.props.onChangeUser);
   };
 
   render() {

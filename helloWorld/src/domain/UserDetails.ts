@@ -3,6 +3,7 @@ import { KEYS } from "../data/config";
 import { LocalData } from "../data/LocalData";
 import { ApiData } from "../data/ApiData";
 import { IUser } from "./IUser";
+import { string } from "prop-types";
 
 export default class UserDetails {
   localData: LocalData;
@@ -13,9 +14,13 @@ export default class UserDetails {
     this.apiData = new ApiData();
   }
 
-  close(componentId: any, editedUser?: IUser, onChangeUser?: (editedUser: IUser) => void) {
-    if (editedUser && onChangeUser)
-      onChangeUser(editedUser);
+  async close(componentId: any, userId?: number, onChangeUser?: (editedUser: IUser) => void) {
+    if (userId && onChangeUser){
+      var editedUser = await this.getData(userId);
+      if (!(typeof editedUser === "string")){
+        onChangeUser(editedUser);
+      }
+    }
     Navigation.dismissModal(componentId);
   };
 
