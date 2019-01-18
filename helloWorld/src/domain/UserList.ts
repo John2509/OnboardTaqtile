@@ -1,4 +1,4 @@
-import { IUser } from "./IUser";
+import { IUser } from "./User/IUser";
 import Navigation from "../core/navigation";
 import { KEYS } from "../data/config";
 import { LocalData } from "../data/LocalData";

@@ -2,7 +2,7 @@ import Navigation from "../core/navigation";
 import { KEYS } from "../data/config";
 import { LocalData } from "../data/LocalData";
 import { ApiData } from "../data/ApiData";
-import { IUser } from "./IUser";
+import { IUser } from "./User/IUser";
 
 export default class UserDetails {
   localData: LocalData;
@@ -23,13 +23,7 @@ export default class UserDetails {
     Navigation.dismissModal(componentId);
   };
 
-  async sendEdit(userId: number, name: string, email: string, role: string) : Promise<IUser | String> {
-    const editedUser: IUser = {
-      username: name,
-      id: userId,
-      email: email,
-      role: role 
-    }
+  async sendEdit(editedUser: IUser) : Promise<IUser | String> {
 
     try {
       const token = await this.localData.get(KEYS.TOKEN_KEY);

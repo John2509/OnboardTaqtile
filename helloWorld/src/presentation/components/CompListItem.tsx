@@ -1,7 +1,7 @@
 import React, { Component} from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { styles } from '../styles';
-import { IUser } from '../../domain/IUser';
+import { IUser } from '../../domain/User/IUser';
 
 export default class CompListItem extends Component<{
   user: {

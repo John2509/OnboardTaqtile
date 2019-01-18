@@ -1,7 +1,7 @@
 import React , { Component } from "react";
 import { View, Text, TextInput } from "react-native";
 import { styles } from "../styles";
-import { IValidator } from "../../domain/IValidator";
+import { IValidator } from "../../domain/Validator/IValidator";
 
 export default class CompInputText extends Component<{
   title: string,

@@ -3,10 +3,11 @@ import { View, Text, Picker, TouchableHighlight, Alert, Modal, ActivityIndicator
 
 import CompInputText from "../components/CompInputText";
 import { styles } from "../styles";
-import ValidatorName from "../../domain/ValidatorName";
-import ValidatorEmail from "../../domain/ValidatorEmail";
-import ValidatorPassword from "../../domain/ValidatorPassword";
+import ValidatorName from "../../domain/Validator/ValidatorName";
+import ValidatorEmail from "../../domain/Validator/ValidatorEmail";
+import ValidatorPassword from "../../domain/Validator/ValidatorPassword";
 import UserCreate from "../../domain/UserCreate";
+import UserFactory from "../../domain/User/UserFactory";
 
 export default class UserCreatePage extends Component<{
   componentId: any,
@@ -83,7 +84,8 @@ export default class UserCreatePage extends Component<{
     if (!error){
       this.setState({loading: true});
       try {
-        await this.userCreate.createRequest(this.state.name, this.state.password, this.state.email, this.state.role);
+        var user = UserFactory.makeUser(this.state.name, this.state.email, this.state.role);
+        await this.userCreate.createRequest(user, this.state.password);
         self.activityIndicatorEnd( true , "Cadastro feito com sucesso.");
       }
       catch (error) {

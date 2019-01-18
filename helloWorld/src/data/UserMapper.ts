@@ -1,4 +1,4 @@
-import { IUser } from "../domain/IUser";
+import { IUser } from "../domain/User/IUser";
 
 export default class UserMapper {
     static mapForUser(data: any): IUser {

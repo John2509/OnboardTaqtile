@@ -5,10 +5,11 @@ import {
 
 import { styles } from '../styles';
 import CompInputText from '../components/CompInputText';
-import ValidatorName from '../../domain/ValidatorName';
-import ValidatorEmail from '../../domain/ValidatorEmail';
+import ValidatorName from '../../domain/Validator/ValidatorName';
+import ValidatorEmail from '../../domain/Validator/ValidatorEmail';
 import UserDetails from '../../domain/UserDetails';
-import { IUser } from '../../domain/IUser';
+import { IUser } from '../../domain/User/IUser';
+import UserFactory from '../../domain/User/UserFactory';
 
 export default class UserDetailsPage extends React.Component<{
   userId: number,
@@ -85,7 +86,8 @@ export default class UserDetailsPage extends React.Component<{
 
       if (!error){
         try {
-          await this.userDetails.sendEdit(this.props.userId, this.state.name, this.state.email, this.state.role);
+          var user = UserFactory.makeUser(this.state.name, this.state.email, this.state.role, this.props.userId)
+          await this.userDetails.sendEdit(user);
           this.setState({edit: !this.state.edit});
           Alert.alert('Edição feita com sucesso!')
         }

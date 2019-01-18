@@ -2,7 +2,7 @@ import { ApiData } from "../data/ApiData";
 import { LocalData } from "../data/LocalData";
 import { KEYS } from "../data/config";
 import Navigation from "../core/navigation";
-import { IUser } from "./IUser";
+import { IUser } from "./User/IUser";
 
 export default class Login {
   apiData: ApiData;

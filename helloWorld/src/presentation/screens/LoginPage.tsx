@@ -11,8 +11,8 @@ import {
 
 import { styles } from '../styles'
 import CompInputText from '../components/CompInputText';
-import ValidatorEmail from '../../domain/ValidatorEmail';
-import ValidatorPassword from '../../domain/ValidatorPassword';
+import ValidatorEmail from '../../domain/Validator/ValidatorEmail';
+import ValidatorPassword from '../../domain/Validator/ValidatorPassword';
 import Login from '../../domain/Login';
 
 export default class LoginPage extends Component<{}, { 

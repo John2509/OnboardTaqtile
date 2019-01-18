@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 
 import CompListItem from '../components/CompListItem';
-import { IUser } from '../../domain/IUser';
+import { IUser } from '../../domain/User/IUser';
 import UserList from '../../domain/UserList';
 
 export default class UserListPage extends React.Component<{

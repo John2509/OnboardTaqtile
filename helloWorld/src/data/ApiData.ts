@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { IUser } from "../domain/IUser";
+import { IUser } from "../domain/User/IUser";
 import UserMapper from "./UserMapper";
 
 export class ApiData {

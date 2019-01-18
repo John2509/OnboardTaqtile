@@ -2,7 +2,7 @@ import { KEYS } from "../data/config";
 import { LocalData } from "../data/LocalData";
 import { ApiData } from "../data/ApiData";
 import Navigation from "../core/navigation";
-import { IUser } from "./IUser";
+import { IUser } from "./User/IUser";
 
 export default class UserCreate {
   localData: LocalData;
@@ -17,14 +17,8 @@ export default class UserCreate {
     Navigation.popScreen(componentId);
   };
 
-  async createRequest(name: string, password: string, email: string, role: string): Promise<IUser | string> {
+  async createRequest(createdUser: IUser, password: string): Promise<IUser | string> {
     const token = await this.localData.get(KEYS.TOKEN_KEY);
-    const createdUser: IUser = {
-      email: email,
-      username: name,
-      role: role,
-      id: 0
-    }
 
     try {
       var user = await this.apiData.createUser(createdUser, password, token);
