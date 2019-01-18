@@ -18,10 +18,6 @@ export default class UserList {
     return list;
   };
 
-  openUserCreate() {
-    Navigation.showModal('UserCreate');
-  };
-
   openUserDetails(userId: number, onChangeUser: {(editedUser: IUser): void}) {
     Navigation.showModal('UserDetails', {userId: userId, onChangeUser: (editedUser: IUser) => onChangeUser(editedUser)});
   }

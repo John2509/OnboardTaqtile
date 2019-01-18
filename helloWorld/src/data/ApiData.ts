@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { IUser } from "../domain/IUser";
+import UserMapper from "./UserMapper";
 
 export class ApiData {
   private static baseURL = 'https://tq-template-server-sample.herokuapp.com/'
@@ -10,37 +11,23 @@ export class ApiData {
       password: password,
       rememberMe: rememberMe
     });
-    var user : IUser = {
-      email: res.data.data.user.email,
-      username: res.data.data.user.name,
-      id: res.data.data.user.id,
-      role: res.data.data.user.role
-    };
-    var userToke = { 
-      user: user,
-      token: res.data.data.token
-    }
-    return userToke
+    var userAndToken = UserMapper.mapForUserAndToken(res);
+    return userAndToken
   }
 
-  async createUser(name: string, password: string, email: string, role: string, token: string): Promise<IUser> {
+  async createUser(createdUser: IUser, password: string, token: string): Promise<IUser> {
     var res = await Axios.post(ApiData.baseURL + 'users/', {
-      name: name,
+      name: createdUser.username,
       password: password,
-      email: email,
-      role: role
+      email: createdUser.email,
+      role: createdUser.role
     },{
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
       }
     });
-    var user : IUser = {
-      email: res.data.data.email,
-      username: res.data.data.name,
-      id: res.data.data.id,
-      role: res.data.data.role
-    };
+    var user: IUser = UserMapper.mapForUser(res);
     return user;
   }
 
@@ -50,21 +37,16 @@ export class ApiData {
         Authorization: token,
       }
     });
-    var user : IUser = {
-      email: res.data.data.email,
-      username: res.data.data.name,
-      id: res.data.data.id,
-      role: res.data.data.role
-    };
+    var user: IUser = UserMapper.mapForUser(res);
     return user;
   }
 
-  async editUser(userId: number, name: string, email: string, role: string, token: string): Promise<IUser> {
-    var res = await Axios.put(ApiData.baseURL + `users/${userId}`,
+  async editUser(editedUser: IUser, token: string): Promise<IUser> {
+    var res = await Axios.put(ApiData.baseURL + `users/${editedUser.id}`,
     {
-      name: name,
-      email: email,
-      role: role
+      name: editedUser.username,
+      email: editedUser.email,
+      role: editedUser.role
     },
     {
       headers: {
@@ -72,12 +54,7 @@ export class ApiData {
         Authorization: token,
       }
     });
-    var user : IUser = {
-      email: res.data.data.email,
-      username: res.data.data.name,
-      id: res.data.data.id,
-      role: res.data.data.role
-    };
+    var user : IUser = UserMapper.mapForUser(res);
     return user;
   }
 
@@ -93,16 +70,7 @@ export class ApiData {
         Authorization: token,
       }
     });
-    var users : IUser[] = [];
-    res.data.data.forEach((user : any) => {
-      var x : IUser = {
-        email: user.email,
-        username: user.name,
-        id: user.id,
-        role: user.role
-      };
-      users.push(x);
-    });
+    var users : IUser[] = UserMapper.mapForUserList(res);
     return users;
   }
 }

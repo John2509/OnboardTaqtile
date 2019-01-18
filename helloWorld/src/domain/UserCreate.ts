@@ -19,9 +19,15 @@ export default class UserCreate {
 
   async createRequest(name: string, password: string, email: string, role: string): Promise<IUser | string> {
     const token = await this.localData.get(KEYS.TOKEN_KEY);
+    const createdUser: IUser = {
+      email: email,
+      username: name,
+      role: role,
+      id: 0
+    }
 
     try {
-      var user = await this.apiData.createUser(name, password, email, role, token);
+      var user = await this.apiData.createUser(createdUser, password, token);
       return Promise.resolve(user);
     } catch (error) {
       if (error.response) {

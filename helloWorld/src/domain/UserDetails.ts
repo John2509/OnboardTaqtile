@@ -24,9 +24,16 @@ export default class UserDetails {
   };
 
   async sendEdit(userId: number, name: string, email: string, role: string) : Promise<IUser | String> {
+    const editedUser: IUser = {
+      username: name,
+      id: userId,
+      email: email,
+      role: role 
+    }
+
     try {
       const token = await this.localData.get(KEYS.TOKEN_KEY);
-      var user = await this.apiData.editUser(userId, name, email, role, token);
+      var user = await this.apiData.editUser(editedUser, token);
       return Promise.resolve(user)
     }
     catch (error) {
