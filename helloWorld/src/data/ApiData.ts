@@ -58,7 +58,7 @@ export class ApiData {
     return user;
   }
 
-  async getUserList(page: number, window: number, token: string): Promise<IUser[]> {
+  async getUserList(page: number, window: number, token: string): Promise<{list: IUser[], totalPages: number}> {
     var res = await Axios.get(ApiData.baseURL + 'users', {
       params: {
         pagination: {
@@ -71,6 +71,6 @@ export class ApiData {
       }
     });
     var users : IUser[] = UserMapper.mapForUserList(res);
-    return users;
+    return {list: users, totalPages: res.data.pagination.totalPages};
   }
 }

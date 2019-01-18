@@ -22,14 +22,18 @@ export default class UserList {
     Navigation.showModal('UserDetails', {userId: userId, onChangeUser: (editedUser: IUser) => onChangeUser(editedUser)});
   }
 
-  async getData(page: number, window: number, list: Array<IUser>) : Promise<IUser[] | string> {
+  async getData(page: number, window: number, list: Array<IUser>) : Promise<{list: IUser[], page: number} | string> {
     try {
       const token = await this.localData.get(KEYS.TOKEN_KEY);
-      var users = await this.apiData.getUserList(page, window, token);
-      users.forEach((user: IUser) => {
+      var res = await this.apiData.getUserList(page, window, token);
+      res.list.forEach((user: IUser) => {
         list.push(user);
       });
-      return Promise.resolve(list);
+      var newPage = page;
+      if (page !== res.totalPages){
+        newPage++;
+      }
+      return Promise.resolve({list: list, page: newPage});
     } catch (error) {
       return Promise.reject("Error");
     }

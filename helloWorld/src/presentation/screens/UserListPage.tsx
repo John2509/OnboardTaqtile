@@ -45,9 +45,9 @@ export default class UserListPage extends React.Component<{
 
   async getData() {
     try {
-      var list = await this.userList.getData(this.state.page, 30, this.state.listData);
-      if (!(typeof list === "string")) {
-        this.setState({listData: list, page: this.state.page+1});
+      var res = await this.userList.getData(this.state.page, 30, this.state.listData);
+      if (!(typeof res === "string")) {
+        this.setState({listData: res.list, page: res.page});
       }
       else throw new Error();
     }
